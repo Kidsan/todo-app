@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option go_package = "github.com/kidsan/todo-app/proto";
+
+package proto;
+
+// The Todo service definition.
+service Todos {
+  rpc Get (GetRequest) returns (TodoListReply) {}
+  rpc Save(TodoRequest) returns (TodoReply) {}
+  rpc Find(TodoName) returns (TodoReply) {}
+}
+
+message TodoRequest {
+  string name = 1;
+  string description = 2;
+}
+
+message TodoReply {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message TodoName {
+  string name = 1;
+}
+
+message TodoListReply {
+  repeated TodoReply todos = 1;
+}
+
+message GetRequest {}
