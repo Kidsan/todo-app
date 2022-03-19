@@ -34,32 +34,30 @@ func (g GRPCHandler) Get(ctx context.Context, _ *pb.GetRequest) (*pb.TodoListRep
 	r := &pb.TodoListReply{}
 	for _, v := range todos {
 		r.Todos = append(r.Todos, &pb.TodoReply{
-			Id:   v.ID.String(),
 			Name: v.Name,
 		})
 	}
 	if err != nil {
 		return nil, fmt.Errorf("ports(todos): could not get all todos %w", err)
-	
+	}
 	return r, nil
 }
 
-// func (g GRPCHandler) Save(ctx context.Context, newTodoRequest *pb.TodoRequest) (*pb.TodoReply, error) {
-// 	newTodo := todosapi.Todo{
-// 		ID:   uuid.New(),
-// 		Name: newTodoRequest.GetName(),
-// 	}
-// 	result, err := g.service.Save(ctx, newTodo)
-// 	if err != nil {
-// 		return &pb.TodoReply{}, fmt.Errorf("ports(todos): could save new todo %w", err)
-// 	}
-// 	return &pb.TodoReply{Id: result.ID.String(), Name: result.Name}, nil
-// }
+func (g GRPCHandler) Save(ctx context.Context, newTodoRequest *pb.TodoRequest) (*pb.TodoReply, error) {
+	newTodo := todosapi.Todo{
+		Name: newTodoRequest.GetName(),
+	}
+	result, err := g.service.Save(ctx, newTodo)
+	if err != nil {
+		return &pb.TodoReply{}, fmt.Errorf("ports(todos): could save new todo %w", err)
+	}
+	return &pb.TodoReply{Name: result.Name}, nil
+}
 
-// func (g GRPCHandler) Find(ctx context.Context, id *pb.TodoId) (*pb.TodoReply, error) {
-// 	result, err := g.service.Find(ctx, id.GetId())
-// 	if err != nil {
-// 		return &pb.TodoReply{}, fmt.Errorf("ports(todo): could find todo %w", err)
-// 	}
-// 	return &pb.TodoReply{Id: result.ID.String(), Name: result.Name}, nil
-// }
+func (g GRPCHandler) Find(ctx context.Context, id *pb.TodoName) (*pb.TodoReply, error) {
+	result, err := g.service.Find(ctx, id.GetName())
+	if err != nil {
+		return &pb.TodoReply{}, fmt.Errorf("ports(todo): could find todo %w", err)
+	}
+	return &pb.TodoReply{Name: result.Name}, nil
+}
