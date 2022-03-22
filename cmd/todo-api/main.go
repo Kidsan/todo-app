@@ -1,7 +1,10 @@
 package main
 
 import (
-	"fmt"
+	"github.com/kidsan/todo-app/config"
+	"github.com/kidsan/todo-app/grpc"
+	"github.com/kidsan/todo-app/logger"
+	"github.com/kidsan/todo-app/sql"
 )
 
 type PortListener interface {
@@ -9,26 +12,25 @@ type PortListener interface {
 }
 
 func main() {
-	// logger := logger.NewLogger()
-	// config, err := config.Read()
-	// if err != nil {
-	// 	panic(err)
-	// }
+	logger := logger.NewLogger()
+	config, err := config.Read()
+	if err != nil {
+		panic(err)
+	}
 
 	// // if err := runMigration(config.Database); err != nil {
 	// // 	panic(err)
 	// // }
 
-	// // dbConnection, err := openDBConnection(config.Database.DSN(), config.Database.Database)
-	// // if err != nil {
-	// // 	panic(err)
-	// // }
+	// dbConnection, err := openDBConnection(config.Database.DSN(), config.Database.Database)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	// var server PortListener
-	// server = http.NewGRPCServer(config, logger, nil)
+	todoService := sql.NewTodoService(nil)
+	server := grpc.NewGRPCServer(config, logger, todoService)
 
-	// server.Start()
-	fmt.Println("ay")
+	server.Start()
 }
 
 // func runMigration(config todosapi.DatabaseConfig) error {

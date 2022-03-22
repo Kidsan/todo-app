@@ -1,4 +1,4 @@
-package http
+package grpc
 
 import (
 	"fmt"
@@ -8,24 +8,24 @@ import (
 	todoapp "github.com/kidsan/todo-app"
 	pb "github.com/kidsan/todo-app/proto"
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 
 	"google.golang.org/grpc"
 )
 
 type GRPCServer struct {
-	logger     *zap.Logger
-	server     *grpc.Server
-	connection *gorm.DB
-	config     todoapp.ServerConfig
+	logger *zap.Logger
+	server *grpc.Server
+	config todoapp.ServerConfig
+
+	todoService todoapp.TodoService
 }
 
-func NewGRPCServer(config todoapp.Config, logger *zap.Logger, connection *gorm.DB) *GRPCServer {
+func NewGRPCServer(config todoapp.Config, logger *zap.Logger, todoService todoapp.TodoService) *GRPCServer {
 	grpcServer := &GRPCServer{
-		config:     config.Server,
-		logger:     logger,
-		connection: connection,
-		server:     grpc.NewServer(),
+		config:      config.Server,
+		logger:      logger,
+		server:      grpc.NewServer(),
+		todoService: todoService,
 	}
 	pb.RegisterTodosServer(grpcServer.server, grpcServer.buildTodoServer())
 	return grpcServer
