@@ -12,32 +12,32 @@ import (
 	"google.golang.org/grpc"
 )
 
-type GRPCServer struct {
-	logger *zap.Logger
-	server *grpc.Server
-	config todoapp.ServerConfig
+type Server struct {
+	logger     *zap.Logger
+	grpcServer *grpc.Server
+	config     todoapp.ServerConfig
 
 	todoService todoapp.TodoService
 }
 
-func NewGRPCServer(config todoapp.Config, logger *zap.Logger, todoService todoapp.TodoService) *GRPCServer {
-	grpcServer := &GRPCServer{
+func NewServer(config todoapp.Config, logger *zap.Logger, todoService todoapp.TodoService) *Server {
+	server := &Server{
 		config:      config.Server,
 		logger:      logger,
-		server:      grpc.NewServer(),
+		grpcServer:  grpc.NewServer(),
 		todoService: todoService,
 	}
-	pb.RegisterTodosServer(grpcServer.server, grpcServer.buildTodoServer())
-	return grpcServer
+	pb.RegisterTodosServer(server.grpcServer, server.buildTodoServer())
+	return server
 }
 
-func (s *GRPCServer) Start() {
+func (s *Server) Start() {
 	s.logger.Info(fmt.Sprintf("GRPC Application listening on port %d", s.config.Port))
 	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", s.config.Port))
 	if err != nil {
 		s.logger.Sugar().Fatalf("failed to listen: %v", err)
 	}
-	if err := s.server.Serve(lis); err != nil {
+	if err := s.grpcServer.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }

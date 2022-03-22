@@ -15,7 +15,7 @@ type TodoGRPCHandler struct {
 	logger  *zap.Logger
 }
 
-func (g *GRPCServer) buildTodoServer() pb.TodosServer {
+func (g *Server) buildTodoServer() pb.TodosServer {
 	return TodoGRPCHandler{
 		service: g.todoService,
 		logger:  g.logger,

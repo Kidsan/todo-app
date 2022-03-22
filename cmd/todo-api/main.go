@@ -28,7 +28,7 @@ func main() {
 	// }
 
 	todoService := sql.NewTodoService(nil)
-	server := grpc.NewGRPCServer(config, logger, todoService)
+	server := grpc.NewServer(config, logger, todoService)
 
 	server.Start()
 }
