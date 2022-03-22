@@ -4,23 +4,27 @@ import (
 	"fmt"
 
 	todoapp "github.com/kidsan/todo-app"
-	"github.com/kidsan/todo-app/grpc"
+	"github.com/kidsan/todo-app/http"
 )
 
 func main() {
-	client := grpc.NewClient("0.0.0.0:3000")
-
+	client := http.NewClient("0.0.0.0:3000")
+	defer client.Close()
 	todos, err := client.GetAll()
 	if err != nil {
 		panic(err)
 	}
-	var result []todoapp.Todo
 
-	for _, v := range todos.Todos {
-		result = append(result, todoapp.Todo{
-			Name:        v.GetName(),
-			Description: v.GetDescription(),
-		})
+	fmt.Println(todos)
+
+	newTodo := todoapp.Todo{
+		Name:        "Clean the house",
+		Description: "Better get to it son",
+		Tasks: []todoapp.Task{
+			{Name: "Clean up"},
+		},
 	}
-	fmt.Println(result)
+
+	res, err := client.Save(newTodo)
+	fmt.Println(res)
 }

@@ -1,15 +1,13 @@
 package main
 
 import (
+	"context"
+
 	"github.com/kidsan/todo-app/config"
-	"github.com/kidsan/todo-app/grpc"
+	"github.com/kidsan/todo-app/http"
 	"github.com/kidsan/todo-app/logger"
 	"github.com/kidsan/todo-app/sql"
 )
-
-type PortListener interface {
-	Start()
-}
 
 func main() {
 	logger := logger.NewLogger()
@@ -18,17 +16,17 @@ func main() {
 		panic(err)
 	}
 
-	// // if err := runMigration(config.Database); err != nil {
-	// // 	panic(err)
-	// // }
+	database := sql.NewDB(config.Database.DSN())
+	if err := database.Open(); err != nil {
+		panic(err)
+	}
+	defer database.Close()
 
-	// dbConnection, err := openDBConnection(config.Database.DSN(), config.Database.Database)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	todoService := sql.NewTodoService(nil)
-	server := grpc.NewServer(config, logger, todoService)
+	if err := database.RunMigration(context.Background()); err != nil {
+		panic(err)
+	}
+	todoService := sql.NewTodoService(database)
+	server := http.NewServer(config, logger, todoService)
 
 	server.Start()
 }

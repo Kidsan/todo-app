@@ -1,9 +1,10 @@
-package grpc
+package http
 
 import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
 	todoapp "github.com/kidsan/todo-app"
 	pb "github.com/kidsan/todo-app/proto"
 	"go.uber.org/zap"
@@ -30,24 +31,49 @@ func (t TodoGRPCHandler) Get(ctx context.Context, _ *pb.GetRequest) (*pb.TodoLis
 
 	r := &pb.TodoListReply{}
 	for _, v := range todos {
-		r.Todos = append(r.Todos, &pb.TodoReply{
-			Name: v.Name,
-		})
+		var tasks []*pb.TaskReply
+
+		todo := &pb.TodoReply{
+			Id:          v.ID.String(),
+			Name:        v.Name,
+			Description: v.Description,
+		}
+
+		for _, j := range v.Tasks {
+			tasks = append(tasks, &pb.TaskReply{
+				Name: j.Name,
+			})
+		}
+
+		todo.Tasks = append(todo.Tasks, tasks...)
+
+		r.Todos = append(r.Todos, todo)
 	}
 
 	return r, nil
 }
 
 func (t TodoGRPCHandler) Save(ctx context.Context, newTodoRequest *pb.TodoRequest) (*pb.TodoReply, error) {
-	// newTodo := todosapi.Todo{
-	// 	Name: newTodoRequest.GetName(),
-	// }
-	// result, err := g.service.Save(ctx, newTodo)
-	// if err != nil {
-	// 	return &pb.TodoReply{}, fmt.Errorf("ports(todos): could save new todo %w", err)
-	// }
-	// return &pb.TodoReply{Name: result.Name}, nil
-	return nil, nil
+	var tasks []todoapp.Task
+
+	for _, v := range newTodoRequest.GetTasks() {
+		tasks = append(tasks, todoapp.Task{
+			ID:   uuid.New(),
+			Name: v.GetName(),
+		})
+	}
+	newTodo := todoapp.Todo{
+		ID:          uuid.New(),
+		Name:        newTodoRequest.GetName(),
+		Description: newTodoRequest.GetDescription(),
+		Tasks:       tasks,
+	}
+	result, err := t.service.Save(ctx, newTodo)
+	if err != nil {
+		return &pb.TodoReply{}, fmt.Errorf("ports(todos): could save new todo %w", err)
+	}
+	return &pb.TodoReply{Id: result.ID.String(), Name: result.Name, Description: result.Description}, nil
+
 }
 
 func (t TodoGRPCHandler) Find(ctx context.Context, id *pb.TodoName) (*pb.TodoReply, error) {

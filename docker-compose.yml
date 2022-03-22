@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: "todos"
+      POSTGRES_USER: "todosapi"
+      POSTGRES_PASSWORD: "todosapi"
+    ports:
+      - 5432:5432

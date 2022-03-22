@@ -14,12 +14,14 @@ service Todos {
 message TodoRequest {
   string name = 1;
   string description = 2;
+  repeated TaskRequest tasks = 3;
 }
 
 message TodoReply {
   string id = 1;
   string name = 2;
   string description = 3;
+  repeated TaskReply tasks = 4;
 }
 
 message TodoName {
@@ -31,3 +33,12 @@ message TodoListReply {
 }
 
 message GetRequest {}
+
+message TaskReply {
+  string id = 1;
+  string name = 2;
+}
+
+message TaskRequest {
+  string name = 1;
+}
