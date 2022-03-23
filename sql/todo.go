@@ -23,21 +23,24 @@ func NewTodoService(db *DB) *TodoService {
 // GetTodos returns all todos in the database
 func (t *TodoService) GetTodos(ctx context.Context) ([]todoapp.Todo, error) {
 	var result []todoapp.Todo
-	tx := t.db.conn.Find(&result)
+	tx := t.db.conn.Preload("Tasks").Find(&result)
 	if tx.Error != nil {
 		return nil, fmt.Errorf("sql: could not list all todos: %w", tx.Error)
 	}
-	fmt.Println(result)
+	// t.db.conn.Model(&result).Association("OrderItems").Find(&result.Tasks)
+	tx = t.db.conn.First(&todoapp.Task{})
+	fmt.Println(tx)
 	return result, nil
 }
 
 // Save creates a new Todo in the database
 func (t *TodoService) Save(ctx context.Context, newTodo todoapp.Todo) (todoapp.Todo, error) {
+	fmt.Println("here", newTodo.Tasks)
 	tx := t.db.conn.Create(&newTodo)
 	if tx.Error != nil {
 		return todoapp.Todo{}, fmt.Errorf("sql: could not list all todos: %w", tx.Error)
 	}
-	t.db.conn.Save(&newTodo)
+	// t.db.conn.Save(&newTodo)
 
 	return newTodo, nil
 }

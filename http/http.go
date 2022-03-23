@@ -44,6 +44,13 @@ func (c *Client) GetAll() ([]todoapp.Todo, error) {
 
 	var result []todoapp.Todo
 	for _, v := range todos.GetTodos() {
+		var tasks []todoapp.Task
+
+		for _, v := range v.Tasks {
+			tasks = append(tasks, todoapp.Task{
+				Name: v.Name,
+			})
+		}
 		id, err := uuid.Parse(v.Id)
 		if err != nil {
 			continue
@@ -52,16 +59,24 @@ func (c *Client) GetAll() ([]todoapp.Todo, error) {
 			ID:          id,
 			Name:        v.Name,
 			Description: v.Description,
-			Tasks:       []todoapp.Task{},
+			Tasks:       tasks,
 		})
 	}
 	return result, nil
 }
 
 func (c *Client) Save(newTodo todoapp.Todo) (todoapp.Todo, error) {
+	var tasks []*pb.TaskRequest
+
+	for _, v := range newTodo.Tasks {
+		tasks = append(tasks, &pb.TaskRequest{
+			Name: v.Name,
+		})
+	}
 	todo, err := c.grpc.Save(context.Background(), &pb.TodoRequest{
 		Name:        newTodo.Name,
 		Description: newTodo.Description,
+		Tasks:       tasks,
 	})
 	if err != nil {
 		return todoapp.Todo{}, err

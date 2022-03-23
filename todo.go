@@ -15,5 +15,5 @@ type Todo struct {
 	ID          uuid.UUID
 	Name        string
 	Description string
-	Tasks       []Task
+	Tasks       []Task `gorm:"ForeignKey:TodoID"`
 }

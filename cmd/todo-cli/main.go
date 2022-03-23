@@ -25,6 +25,6 @@ func main() {
 		},
 	}
 
-	res, err := client.Save(newTodo)
+	res, _ := client.Save(newTodo)
 	fmt.Println(res)
 }
