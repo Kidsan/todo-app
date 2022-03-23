@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/google/uuid"
@@ -92,4 +93,35 @@ func (c *Client) Save(newTodo todoapp.Todo) (todoapp.Todo, error) {
 		Name:        todo.Name,
 		Description: todo.Description,
 	}, nil
+}
+
+func (c *Client) Find(toFind todoapp.Todo) (todoapp.Todo, error) {
+	todo, err := c.grpc.Find(context.Background(), &pb.TodoIdentifier{Id: toFind.ID.String()})
+	if err != nil {
+		return todoapp.Todo{}, err
+	}
+
+	id, err := uuid.Parse(todo.Id)
+	if err != nil {
+		return todoapp.Todo{}, err
+	}
+
+	result := todoapp.Todo{
+		ID:          id,
+		Name:        todo.Name,
+		Description: todo.Description,
+	}
+	for _, v := range todo.Tasks {
+		taskId, err := uuid.Parse(v.Id)
+		if err != nil {
+			fmt.Println("id error")
+			continue
+		}
+
+		result.Tasks = append(result.Tasks, todoapp.Task{
+			ID:   taskId,
+			Name: v.Name,
+		})
+	}
+	return result, nil
 }

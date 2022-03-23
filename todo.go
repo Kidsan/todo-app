@@ -7,13 +7,17 @@ import (
 )
 
 type TodoService interface {
-	GetTodos(ctx context.Context) ([]Todo, error)
-	Save(ctx context.Context, newTodo Todo) (Todo, error)
+	GetAll(context.Context) ([]Todo, error)
+	Find(context.Context, Todo) (Todo, error)
+	Create(context.Context, Todo) (Todo, error)
+	Update(context.Context, Todo) (Todo, error)
+	Delete(context.Context, Todo) error
 }
 
 type Todo struct {
 	ID          uuid.UUID
 	Name        string
 	Description string
+	Complete    bool
 	Tasks       []Task `gorm:"ForeignKey:TodoID"`
 }

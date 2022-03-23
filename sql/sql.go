@@ -16,13 +16,15 @@ const (
 	createTodosTable = `CREATE TABLE IF NOT EXISTS todos.todos (
 			id uuid PRIMARY KEY,
 			name varchar(40),
-			description varchar(100)
+			description varchar(100),
+			complete boolean NOT NULL DEFAULT false
 		);`
 	createTasksTable = `
 	CREATE TABLE IF NOT EXISTS todos.tasks (
 		id uuid PRIMARY KEY,
 		todo_id uuid,
 		name varchar(40),
+		complete boolean NOT NULL DEFAULT false,
 		CONSTRAINT fk_todo FOREIGN KEY(todo_id) REFERENCES todos.todos(id) ON DELETE CASCADE
 	);`
 )

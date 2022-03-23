@@ -30,25 +30,3 @@ func main() {
 
 	server.Start()
 }
-
-// func runMigration(config todosapi.DatabaseConfig) error {
-// 	migration, err := migration.NewMigration(config)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer migration.Close()
-
-// 	return migration.Up()
-// }
-
-// func openDBConnection(dsn, databaseName string) (*gorm.DB, error) {
-// 	connection, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-// 		Logger: gormLogger.Default.LogMode(gormLogger.Silent),
-// 	})
-
-// 	if err != nil {
-// 		return nil, fmt.Errorf("api: could not open database: %w", err)
-// 	}
-
-// 	return connection, nil
-// }

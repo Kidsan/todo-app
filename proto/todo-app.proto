@@ -8,7 +8,7 @@ package proto;
 service Todos {
   rpc Get (GetRequest) returns (TodoListReply) {}
   rpc Save(TodoRequest) returns (TodoReply) {}
-  rpc Find(TodoName) returns (TodoReply) {}
+  rpc Find(TodoIdentifier) returns (TodoReply) {}
 }
 
 message TodoRequest {
@@ -22,10 +22,12 @@ message TodoReply {
   string name = 2;
   string description = 3;
   repeated TaskReply tasks = 4;
+  bool complete = 5;
 }
 
-message TodoName {
+message TodoIdentifier {
   string name = 1;
+  string id = 2;
 }
 
 message TodoListReply {

@@ -10,21 +10,27 @@ import (
 func main() {
 	client := http.NewClient("0.0.0.0:3000")
 	defer client.Close()
-	todos, err := client.GetAll()
-	if err != nil {
-		panic(err)
-	}
+	// todos, err := client.GetAll()
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	fmt.Println(todos)
+	// fmt.Println(todos)
 
 	newTodo := todoapp.Todo{
 		Name:        "Clean the house",
 		Description: "Better get to it son",
 		Tasks: []todoapp.Task{
-			{Name: "Clean up"},
+			{Name: "Clean up Task"},
 		},
 	}
 
 	res, _ := client.Save(newTodo)
 	fmt.Println(res)
+
+	toFind := todoapp.Todo{
+		ID: res.ID,
+	}
+	res2, _ := client.Find(toFind)
+	fmt.Println(res2)
 }

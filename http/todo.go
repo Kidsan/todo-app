@@ -24,7 +24,7 @@ func (g *Server) buildTodoServer() pb.TodosServer {
 }
 
 func (t TodoGRPCHandler) Get(ctx context.Context, _ *pb.GetRequest) (*pb.TodoListReply, error) {
-	todos, err := t.service.GetTodos(ctx)
+	todos, err := t.service.GetAll(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("ports(todos): could not get all todos %w", err)
 	}
@@ -68,19 +68,30 @@ func (t TodoGRPCHandler) Save(ctx context.Context, newTodoRequest *pb.TodoReques
 		Description: newTodoRequest.GetDescription(),
 		Tasks:       tasks,
 	}
-	result, err := t.service.Save(ctx, newTodo)
+	result, err := t.service.Create(ctx, newTodo)
 	if err != nil {
-		return &pb.TodoReply{}, fmt.Errorf("ports(todos): could save new todo %w", err)
+		return &pb.TodoReply{}, fmt.Errorf("ports(todos): could not save new todo %w", err)
 	}
 	return &pb.TodoReply{Id: result.ID.String(), Name: result.Name, Description: result.Description}, nil
 
 }
 
-func (t TodoGRPCHandler) Find(ctx context.Context, id *pb.TodoName) (*pb.TodoReply, error) {
-	// result, err := g.service.Find(ctx, id.GetName())
-	// if err != nil {
-	// 	return &pb.TodoReply{}, fmt.Errorf("ports(todo): could find todo %w", err)
-	// }
-	// return &pb.TodoReply{Name: result.Name}, nil
-	return nil, nil
+func (t TodoGRPCHandler) Find(ctx context.Context, toFind *pb.TodoIdentifier) (*pb.TodoReply, error) {
+	id, err := uuid.Parse(toFind.Id)
+	result, err := t.service.Find(ctx, todoapp.Todo{
+		ID: id,
+	})
+	if err != nil {
+		return &pb.TodoReply{}, fmt.Errorf("ports(todo): could not find todo %w", err)
+	}
+
+	var tasks []*pb.TaskReply
+	for _, j := range result.Tasks {
+		tasks = append(tasks, &pb.TaskReply{
+			Id:   j.ID.String(),
+			Name: j.Name,
+		})
+	}
+
+	return &pb.TodoReply{Id: result.ID.String(), Name: result.Name, Description: result.Description, Complete: result.Complete, Tasks: tasks}, nil
 }

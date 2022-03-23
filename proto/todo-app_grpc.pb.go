@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 type TodosClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*TodoListReply, error)
 	Save(ctx context.Context, in *TodoRequest, opts ...grpc.CallOption) (*TodoReply, error)
-	Find(ctx context.Context, in *TodoName, opts ...grpc.CallOption) (*TodoReply, error)
+	Find(ctx context.Context, in *TodoIdentifier, opts ...grpc.CallOption) (*TodoReply, error)
 }
 
 type todosClient struct {
@@ -49,7 +49,7 @@ func (c *todosClient) Save(ctx context.Context, in *TodoRequest, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *todosClient) Find(ctx context.Context, in *TodoName, opts ...grpc.CallOption) (*TodoReply, error) {
+func (c *todosClient) Find(ctx context.Context, in *TodoIdentifier, opts ...grpc.CallOption) (*TodoReply, error) {
 	out := new(TodoReply)
 	err := c.cc.Invoke(ctx, "/proto.Todos/Find", in, out, opts...)
 	if err != nil {
@@ -64,7 +64,7 @@ func (c *todosClient) Find(ctx context.Context, in *TodoName, opts ...grpc.CallO
 type TodosServer interface {
 	Get(context.Context, *GetRequest) (*TodoListReply, error)
 	Save(context.Context, *TodoRequest) (*TodoReply, error)
-	Find(context.Context, *TodoName) (*TodoReply, error)
+	Find(context.Context, *TodoIdentifier) (*TodoReply, error)
 	mustEmbedUnimplementedTodosServer()
 }
 
@@ -78,7 +78,7 @@ func (UnimplementedTodosServer) Get(context.Context, *GetRequest) (*TodoListRepl
 func (UnimplementedTodosServer) Save(context.Context, *TodoRequest) (*TodoReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Save not implemented")
 }
-func (UnimplementedTodosServer) Find(context.Context, *TodoName) (*TodoReply, error) {
+func (UnimplementedTodosServer) Find(context.Context, *TodoIdentifier) (*TodoReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
 }
 func (UnimplementedTodosServer) mustEmbedUnimplementedTodosServer() {}
@@ -131,7 +131,7 @@ func _Todos_Save_Handler(srv interface{}, ctx context.Context, dec func(interfac
 }
 
 func _Todos_Find_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TodoName)
+	in := new(TodoIdentifier)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -143,7 +143,7 @@ func _Todos_Find_Handler(srv interface{}, ctx context.Context, dec func(interfac
 		FullMethod: "/proto.Todos/Find",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TodosServer).Find(ctx, req.(*TodoName))
+		return srv.(TodosServer).Find(ctx, req.(*TodoIdentifier))
 	}
 	return interceptor(ctx, in, info, handler)
 }
