@@ -2,10 +2,8 @@ package http
 
 import (
 	"context"
-	"fmt"
 	"log"
 
-	"github.com/google/uuid"
 	todoapp "github.com/kidsan/todo-app"
 	pb "github.com/kidsan/todo-app/proto"
 	"google.golang.org/grpc"
@@ -52,12 +50,10 @@ func (c *Client) GetAll() ([]todoapp.Todo, error) {
 				Name: v.Name,
 			})
 		}
-		id, err := uuid.Parse(v.Id)
 		if err != nil {
 			continue
 		}
 		result = append(result, todoapp.Todo{
-			ID:          id,
 			Name:        v.Name,
 			Description: v.Description,
 			Tasks:       tasks,
@@ -79,19 +75,23 @@ func (c *Client) Save(newTodo todoapp.Todo) (todoapp.Todo, error) {
 		Description: newTodo.Description,
 		Tasks:       tasks,
 	})
+
 	if err != nil {
 		return todoapp.Todo{}, err
 	}
 
-	id, err := uuid.Parse(todo.Id)
-	if err != nil {
-		return todoapp.Todo{}, err
+	var savedTasks []todoapp.Task
+
+	for _, v := range savedTasks {
+		savedTasks = append(savedTasks, todoapp.Task{
+			Name: v.Name,
+		})
 	}
 
 	return todoapp.Todo{
-		ID:          id,
 		Name:        todo.Name,
 		Description: todo.Description,
+		Tasks:       savedTasks,
 	}, nil
 }
 
@@ -101,27 +101,47 @@ func (c *Client) Find(toFind todoapp.Todo) (todoapp.Todo, error) {
 		return todoapp.Todo{}, err
 	}
 
-	id, err := uuid.Parse(todo.Id)
-	if err != nil {
-		return todoapp.Todo{}, err
-	}
-
 	result := todoapp.Todo{
-		ID:          id,
 		Name:        todo.Name,
 		Description: todo.Description,
 	}
 	for _, v := range todo.Tasks {
-		taskId, err := uuid.Parse(v.Id)
-		if err != nil {
-			fmt.Println("id error")
-			continue
-		}
-
 		result.Tasks = append(result.Tasks, todoapp.Task{
-			ID:   taskId,
 			Name: v.Name,
 		})
 	}
 	return result, nil
+}
+
+func (c *Client) Update(toUpdate todoapp.Todo) (todoapp.Todo, error) {
+	var tasks []*pb.TaskRequest
+
+	for _, v := range toUpdate.Tasks {
+		tasks = append(tasks, &pb.TaskRequest{
+			Name: v.Name,
+		})
+	}
+	todo, err := c.grpc.Save(context.Background(), &pb.TodoRequest{
+		Name:        toUpdate.Name,
+		Description: toUpdate.Description,
+		Tasks:       tasks,
+	})
+
+	if err != nil {
+		return todoapp.Todo{}, err
+	}
+
+	var savedTasks []todoapp.Task
+
+	for _, v := range savedTasks {
+		savedTasks = append(savedTasks, todoapp.Task{
+			Name: v.Name,
+		})
+	}
+
+	return todoapp.Todo{
+		Name:        todo.Name,
+		Description: todo.Description,
+		Tasks:       savedTasks,
+	}, nil
 }

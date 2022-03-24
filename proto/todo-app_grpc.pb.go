@@ -21,6 +21,7 @@ type TodosClient interface {
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*TodoListReply, error)
 	Save(ctx context.Context, in *TodoRequest, opts ...grpc.CallOption) (*TodoReply, error)
 	Find(ctx context.Context, in *TodoIdentifier, opts ...grpc.CallOption) (*TodoReply, error)
+	Update(ctx context.Context, in *TodoUpdate, opts ...grpc.CallOption) (*TodoReply, error)
 }
 
 type todosClient struct {
@@ -58,6 +59,15 @@ func (c *todosClient) Find(ctx context.Context, in *TodoIdentifier, opts ...grpc
 	return out, nil
 }
 
+func (c *todosClient) Update(ctx context.Context, in *TodoUpdate, opts ...grpc.CallOption) (*TodoReply, error) {
+	out := new(TodoReply)
+	err := c.cc.Invoke(ctx, "/proto.Todos/Update", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TodosServer is the server API for Todos service.
 // All implementations must embed UnimplementedTodosServer
 // for forward compatibility
@@ -65,6 +75,7 @@ type TodosServer interface {
 	Get(context.Context, *GetRequest) (*TodoListReply, error)
 	Save(context.Context, *TodoRequest) (*TodoReply, error)
 	Find(context.Context, *TodoIdentifier) (*TodoReply, error)
+	Update(context.Context, *TodoUpdate) (*TodoReply, error)
 	mustEmbedUnimplementedTodosServer()
 }
 
@@ -80,6 +91,9 @@ func (UnimplementedTodosServer) Save(context.Context, *TodoRequest) (*TodoReply,
 }
 func (UnimplementedTodosServer) Find(context.Context, *TodoIdentifier) (*TodoReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
+}
+func (UnimplementedTodosServer) Update(context.Context, *TodoUpdate) (*TodoReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedTodosServer) mustEmbedUnimplementedTodosServer() {}
 
@@ -148,6 +162,24 @@ func _Todos_Find_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Todos_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TodoUpdate)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TodosServer).Update(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Todos/Update",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TodosServer).Update(ctx, req.(*TodoUpdate))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Todos_ServiceDesc is the grpc.ServiceDesc for Todos service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -166,6 +198,10 @@ var Todos_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Find",
 			Handler:    _Todos_Find_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _Todos_Update_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

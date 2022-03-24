@@ -5,8 +5,7 @@ import (
 )
 
 type Task struct {
-	ID       uuid.UUID
-	TodoID   uuid.UUID `gorm:"column:todo_id"`
-	Name     string
-	Complete bool
+	ID     uuid.UUID
+	TodoID uuid.UUID `gorm:"column:todo_id"`
+	Name   string
 }

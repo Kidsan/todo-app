@@ -34,7 +34,7 @@ func (t *TodoService) GetAll(ctx context.Context) ([]todoapp.Todo, error) {
 // Find returns a specific Todo from the database
 func (t *TodoService) Find(ctx context.Context, toFind todoapp.Todo) (todoapp.Todo, error) {
 	var result todoapp.Todo
-	tx := t.db.conn.Preload("Tasks").Find(&result, toFind.ID)
+	tx := t.db.conn.Preload("Tasks").Find(&result, toFind.Name)
 	if tx.Error != nil {
 		return todoapp.Todo{}, fmt.Errorf("sql: could not create todo: %w", tx.Error)
 	}

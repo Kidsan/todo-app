@@ -34,7 +34,6 @@ func (t TodoGRPCHandler) Get(ctx context.Context, _ *pb.GetRequest) (*pb.TodoLis
 		var tasks []*pb.TaskReply
 
 		todo := &pb.TodoReply{
-			Id:          v.ID.String(),
 			Name:        v.Name,
 			Description: v.Description,
 		}
@@ -58,12 +57,10 @@ func (t TodoGRPCHandler) Save(ctx context.Context, newTodoRequest *pb.TodoReques
 
 	for _, v := range newTodoRequest.GetTasks() {
 		tasks = append(tasks, todoapp.Task{
-			ID:   uuid.New(),
 			Name: v.GetName(),
 		})
 	}
 	newTodo := todoapp.Todo{
-		ID:          uuid.New(),
 		Name:        newTodoRequest.GetName(),
 		Description: newTodoRequest.GetDescription(),
 		Tasks:       tasks,
@@ -72,12 +69,15 @@ func (t TodoGRPCHandler) Save(ctx context.Context, newTodoRequest *pb.TodoReques
 	if err != nil {
 		return &pb.TodoReply{}, fmt.Errorf("ports(todos): could not save new todo %w", err)
 	}
-	return &pb.TodoReply{Id: result.ID.String(), Name: result.Name, Description: result.Description}, nil
+	return &pb.TodoReply{Name: result.Name, Description: result.Description}, nil
 
 }
 
 func (t TodoGRPCHandler) Find(ctx context.Context, toFind *pb.TodoIdentifier) (*pb.TodoReply, error) {
 	id, err := uuid.Parse(toFind.Id)
+	if err != nil {
+		return &pb.TodoReply{}, fmt.Errorf("ports(todos): could not find todo %w", err)
+	}
 	result, err := t.service.Find(ctx, todoapp.Todo{
 		ID: id,
 	})
@@ -88,10 +88,43 @@ func (t TodoGRPCHandler) Find(ctx context.Context, toFind *pb.TodoIdentifier) (*
 	var tasks []*pb.TaskReply
 	for _, j := range result.Tasks {
 		tasks = append(tasks, &pb.TaskReply{
-			Id:   j.ID.String(),
 			Name: j.Name,
 		})
 	}
 
-	return &pb.TodoReply{Id: result.ID.String(), Name: result.Name, Description: result.Description, Complete: result.Complete, Tasks: tasks}, nil
+	return &pb.TodoReply{Name: result.Name, Description: result.Description, Tasks: tasks}, nil
+}
+
+func (t TodoGRPCHandler) Update(ctx context.Context, updated *pb.TodoUpdate) (*pb.TodoReply, error) {
+	id, err := uuid.Parse(updated.Id)
+	if err != nil {
+		return &pb.TodoReply{}, fmt.Errorf("ports(todos): could not find todo %w", err)
+	}
+
+	var tasks []todoapp.Task
+
+	for _, v := range updated.GetTasks() {
+		tasks = append(tasks, todoapp.Task{
+			Name: v.GetName(),
+		})
+	}
+
+	result, err := t.service.Update(ctx, todoapp.Todo{
+		ID:          id,
+		Name:        updated.Name,
+		Description: updated.Description,
+		Tasks:       tasks,
+	})
+	if err != nil {
+		return &pb.TodoReply{}, fmt.Errorf("ports(todo): could not find todo %w", err)
+	}
+
+	var updatedTasks []*pb.TaskReply
+	for _, j := range result.Tasks {
+		updatedTasks = append(updatedTasks, &pb.TaskReply{
+			Name: j.Name,
+		})
+	}
+
+	return &pb.TodoReply{Name: result.Name, Description: result.Description, Tasks: updatedTasks}, nil
 }

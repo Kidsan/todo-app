@@ -9,6 +9,7 @@ service Todos {
   rpc Get (GetRequest) returns (TodoListReply) {}
   rpc Save(TodoRequest) returns (TodoReply) {}
   rpc Find(TodoIdentifier) returns (TodoReply) {}
+  rpc Update(TodoUpdate) returns (TodoReply) {}
 }
 
 message TodoRequest {
@@ -22,12 +23,17 @@ message TodoReply {
   string name = 2;
   string description = 3;
   repeated TaskReply tasks = 4;
-  bool complete = 5;
+}
+
+message TodoUpdate {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  repeated TaskRequest tasks = 4;
 }
 
 message TodoIdentifier {
-  string name = 1;
-  string id = 2;
+  string id = 1;
 }
 
 message TodoListReply {

@@ -29,7 +29,7 @@ func main() {
 	fmt.Println(res)
 
 	toFind := todoapp.Todo{
-		ID: res.ID,
+		Name: res.Name,
 	}
 	res2, _ := client.Find(toFind)
 	fmt.Println(res2)
