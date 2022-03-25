@@ -13,9 +13,10 @@ service Todos {
 }
 
 message TodoRequest {
-  string name = 1;
-  string description = 2;
-  repeated TaskRequest tasks = 3;
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  repeated TaskRequest tasks = 4;
 }
 
 message TodoReply {
@@ -48,5 +49,6 @@ message TaskReply {
 }
 
 message TaskRequest {
-  string name = 1;
+  int32 id = 1;
+  string name = 2;
 }

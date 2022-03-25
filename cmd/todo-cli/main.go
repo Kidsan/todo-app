@@ -22,6 +22,7 @@ func main() {
 		Description: "Better get to it son",
 		Tasks: []todoapp.Task{
 			{Name: "Clean up Task"},
+			{Name: "Tear down Task"},
 		},
 	}
 
@@ -29,7 +30,7 @@ func main() {
 	fmt.Println(res)
 
 	toFind := todoapp.Todo{
-		Name: res.Name,
+		ID: res.ID,
 	}
 	res2, _ := client.Find(toFind)
 	fmt.Println(res2)

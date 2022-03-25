@@ -1,3 +1,6 @@
+start:
+	@go run ./cmd/todo-api/
+
 build:
 	@CGO_ENABLED=0 go build ./cmd/...
 

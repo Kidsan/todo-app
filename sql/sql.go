@@ -14,14 +14,14 @@ const (
 	dropTodos        = `DROP TABLE IF EXISTS todos.todos;`
 	dropTasks        = `DROP TABLE IF EXISTS todos.tasks;`
 	createTodosTable = `CREATE TABLE IF NOT EXISTS todos.todos (
-			id SERIAL PRIMARY_KEY,
+			id SERIAL PRIMARY KEY,
 			name varchar(40),
-			description varchar(100),
+			description varchar(100)
 		);`
 	createTasksTable = `
 	CREATE TABLE IF NOT EXISTS todos.tasks (
-		id SERIAL PRIMARY_KEY,
-		todo_id varchar(40),
+		id SERIAL PRIMARY KEY,
+		todo_id int NOT NULL,
 		name varchar(40),
 		CONSTRAINT fk_todo FOREIGN KEY(todo_id) REFERENCES todos.todos(id) ON DELETE CASCADE
 	);`

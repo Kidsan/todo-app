@@ -34,7 +34,7 @@ func (t *TodoService) GetAll(ctx context.Context) ([]todoapp.Todo, error) {
 // Find returns a specific Todo from the database
 func (t *TodoService) Find(ctx context.Context, toFind todoapp.Todo) (todoapp.Todo, error) {
 	var result todoapp.Todo
-	tx := t.db.conn.Preload("Tasks").Find(&result, toFind.Name)
+	tx := t.db.conn.Preload("Tasks").Find(&result, toFind.ID)
 	if tx.Error != nil {
 		return todoapp.Todo{}, fmt.Errorf("sql: could not create todo: %w", tx.Error)
 	}
@@ -42,15 +42,15 @@ func (t *TodoService) Find(ctx context.Context, toFind todoapp.Todo) (todoapp.To
 	return result, nil
 }
 
-// Create records a new Todo in the database
-func (t *TodoService) Create(ctx context.Context, newTodo todoapp.Todo) (todoapp.Todo, error) {
-	tx := t.db.conn.Create(&newTodo)
-	if tx.Error != nil {
-		return todoapp.Todo{}, fmt.Errorf("sql: could not create todo: %w", tx.Error)
-	}
+// // Create records a new Todo in the database
+// func (t *TodoService) Create(ctx context.Context, newTodo todoapp.Todo) (todoapp.Todo, error) {
+// 	tx := t.db.conn.Create(&newTodo)
+// 	if tx.Error != nil {
+// 		return todoapp.Todo{}, fmt.Errorf("sql: could not create todo: %w", tx.Error)
+// 	}
 
-	return newTodo, nil
-}
+// 	return newTodo, nil
+// }
 
 // Update modifies a new Todo in the database
 func (t *TodoService) Update(ctx context.Context, modifiedTodo todoapp.Todo) (todoapp.Todo, error) {
