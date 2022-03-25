@@ -2,8 +2,6 @@ package todoapp
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
 type TodoService interface {
@@ -15,7 +13,7 @@ type TodoService interface {
 }
 
 type Todo struct {
-	ID          uuid.UUID
+	ID          int
 	Name        string
 	Description string
 	Tasks       []Task `gorm:"ForeignKey:TodoID"`

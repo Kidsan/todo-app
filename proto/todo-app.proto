@@ -19,21 +19,21 @@ message TodoRequest {
 }
 
 message TodoReply {
-  string id = 1;
+  int32 id = 1;
   string name = 2;
   string description = 3;
   repeated TaskReply tasks = 4;
 }
 
 message TodoUpdate {
-  string id = 1;
+  int32 id = 1;
   string name = 2;
   string description = 3;
   repeated TaskRequest tasks = 4;
 }
 
 message TodoIdentifier {
-  string id = 1;
+  int32 id = 1;
 }
 
 message TodoListReply {
@@ -43,7 +43,7 @@ message TodoListReply {
 message GetRequest {}
 
 message TaskReply {
-  string id = 1;
+  int32 id = 1;
   string name = 2;
 }
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
 	todoapp "github.com/kidsan/todo-app"
 	pb "github.com/kidsan/todo-app/proto"
 	"go.uber.org/zap"
@@ -74,12 +73,8 @@ func (t TodoGRPCHandler) Save(ctx context.Context, newTodoRequest *pb.TodoReques
 }
 
 func (t TodoGRPCHandler) Find(ctx context.Context, toFind *pb.TodoIdentifier) (*pb.TodoReply, error) {
-	id, err := uuid.Parse(toFind.Id)
-	if err != nil {
-		return &pb.TodoReply{}, fmt.Errorf("ports(todos): could not find todo %w", err)
-	}
 	result, err := t.service.Find(ctx, todoapp.Todo{
-		ID: id,
+		ID: int(toFind.Id),
 	})
 	if err != nil {
 		return &pb.TodoReply{}, fmt.Errorf("ports(todo): could not find todo %w", err)
@@ -96,10 +91,6 @@ func (t TodoGRPCHandler) Find(ctx context.Context, toFind *pb.TodoIdentifier) (*
 }
 
 func (t TodoGRPCHandler) Update(ctx context.Context, updated *pb.TodoUpdate) (*pb.TodoReply, error) {
-	id, err := uuid.Parse(updated.Id)
-	if err != nil {
-		return &pb.TodoReply{}, fmt.Errorf("ports(todos): could not find todo %w", err)
-	}
 
 	var tasks []todoapp.Task
 
@@ -110,7 +101,7 @@ func (t TodoGRPCHandler) Update(ctx context.Context, updated *pb.TodoUpdate) (*p
 	}
 
 	result, err := t.service.Update(ctx, todoapp.Todo{
-		ID:          id,
+		ID:          int(updated.Id),
 		Name:        updated.Name,
 		Description: updated.Description,
 		Tasks:       tasks,

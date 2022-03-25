@@ -96,7 +96,8 @@ func (c *Client) Save(newTodo todoapp.Todo) (todoapp.Todo, error) {
 }
 
 func (c *Client) Find(toFind todoapp.Todo) (todoapp.Todo, error) {
-	todo, err := c.grpc.Find(context.Background(), &pb.TodoIdentifier{Id: toFind.ID.String()})
+	todo, err := c.grpc.Find(context.Background(), &pb.TodoIdentifier{
+		Id: int32(toFind.ID)})
 	if err != nil {
 		return todoapp.Todo{}, err
 	}
