@@ -34,4 +34,18 @@ func main() {
 	}
 	res2, _ := client.Find(toFind)
 	fmt.Println(res2)
+
+	res2.Name = "Updated name"
+
+	res3, _ := client.Save(res2)
+	fmt.Println(res3)
+	res4 := client.Delete(res3)
+	fmt.Println("deleted", res4)
+
+	todos, err := client.GetAll()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("final", todos)
 }

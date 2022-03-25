@@ -6,49 +6,29 @@ package proto;
 
 // The Todo service definition.
 service Todos {
-  rpc Get (GetRequest) returns (TodoListReply) {}
-  rpc Save(TodoRequest) returns (TodoReply) {}
-  rpc Find(TodoIdentifier) returns (TodoReply) {}
-  rpc Update(TodoUpdate) returns (TodoReply) {}
+  rpc Get (GetRequest) returns (TodoList) {}
+  rpc Save(Todo) returns (Todo) {}
+  rpc Find(Todo) returns (Todo) {}
+  rpc Update(Todo) returns (Todo) {}
+  rpc Delete(Todo) returns (GetRequest) {}
 }
 
-message TodoRequest {
+message Todo {
   int32 id = 1;
   string name = 2;
   string description = 3;
-  repeated TaskRequest tasks = 4;
+  repeated Task tasks = 4;
 }
 
-message TodoReply {
+message TodoList {
+  repeated Todo todos = 1;
+}
+
+message GetRequest{}
+
+
+message Task {
   int32 id = 1;
-  string name = 2;
-  string description = 3;
-  repeated TaskReply tasks = 4;
-}
-
-message TodoUpdate {
-  int32 id = 1;
-  string name = 2;
-  string description = 3;
-  repeated TaskRequest tasks = 4;
-}
-
-message TodoIdentifier {
-  int32 id = 1;
-}
-
-message TodoListReply {
-  repeated TodoReply todos = 1;
-}
-
-message GetRequest {}
-
-message TaskReply {
-  int32 id = 1;
-  string name = 2;
-}
-
-message TaskRequest {
-  int32 id = 1;
-  string name = 2;
+  int32 todoId = 2;
+  string name = 3;
 }

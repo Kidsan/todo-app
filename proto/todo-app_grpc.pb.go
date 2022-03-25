@@ -18,10 +18,11 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TodosClient interface {
-	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*TodoListReply, error)
-	Save(ctx context.Context, in *TodoRequest, opts ...grpc.CallOption) (*TodoReply, error)
-	Find(ctx context.Context, in *TodoIdentifier, opts ...grpc.CallOption) (*TodoReply, error)
-	Update(ctx context.Context, in *TodoUpdate, opts ...grpc.CallOption) (*TodoReply, error)
+	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*TodoList, error)
+	Save(ctx context.Context, in *Todo, opts ...grpc.CallOption) (*Todo, error)
+	Find(ctx context.Context, in *Todo, opts ...grpc.CallOption) (*Todo, error)
+	Update(ctx context.Context, in *Todo, opts ...grpc.CallOption) (*Todo, error)
+	Delete(ctx context.Context, in *Todo, opts ...grpc.CallOption) (*GetRequest, error)
 }
 
 type todosClient struct {
@@ -32,8 +33,8 @@ func NewTodosClient(cc grpc.ClientConnInterface) TodosClient {
 	return &todosClient{cc}
 }
 
-func (c *todosClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*TodoListReply, error) {
-	out := new(TodoListReply)
+func (c *todosClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*TodoList, error) {
+	out := new(TodoList)
 	err := c.cc.Invoke(ctx, "/proto.Todos/Get", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -41,8 +42,8 @@ func (c *todosClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.Call
 	return out, nil
 }
 
-func (c *todosClient) Save(ctx context.Context, in *TodoRequest, opts ...grpc.CallOption) (*TodoReply, error) {
-	out := new(TodoReply)
+func (c *todosClient) Save(ctx context.Context, in *Todo, opts ...grpc.CallOption) (*Todo, error) {
+	out := new(Todo)
 	err := c.cc.Invoke(ctx, "/proto.Todos/Save", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -50,8 +51,8 @@ func (c *todosClient) Save(ctx context.Context, in *TodoRequest, opts ...grpc.Ca
 	return out, nil
 }
 
-func (c *todosClient) Find(ctx context.Context, in *TodoIdentifier, opts ...grpc.CallOption) (*TodoReply, error) {
-	out := new(TodoReply)
+func (c *todosClient) Find(ctx context.Context, in *Todo, opts ...grpc.CallOption) (*Todo, error) {
+	out := new(Todo)
 	err := c.cc.Invoke(ctx, "/proto.Todos/Find", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -59,9 +60,18 @@ func (c *todosClient) Find(ctx context.Context, in *TodoIdentifier, opts ...grpc
 	return out, nil
 }
 
-func (c *todosClient) Update(ctx context.Context, in *TodoUpdate, opts ...grpc.CallOption) (*TodoReply, error) {
-	out := new(TodoReply)
+func (c *todosClient) Update(ctx context.Context, in *Todo, opts ...grpc.CallOption) (*Todo, error) {
+	out := new(Todo)
 	err := c.cc.Invoke(ctx, "/proto.Todos/Update", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *todosClient) Delete(ctx context.Context, in *Todo, opts ...grpc.CallOption) (*GetRequest, error) {
+	out := new(GetRequest)
+	err := c.cc.Invoke(ctx, "/proto.Todos/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -72,10 +82,11 @@ func (c *todosClient) Update(ctx context.Context, in *TodoUpdate, opts ...grpc.C
 // All implementations must embed UnimplementedTodosServer
 // for forward compatibility
 type TodosServer interface {
-	Get(context.Context, *GetRequest) (*TodoListReply, error)
-	Save(context.Context, *TodoRequest) (*TodoReply, error)
-	Find(context.Context, *TodoIdentifier) (*TodoReply, error)
-	Update(context.Context, *TodoUpdate) (*TodoReply, error)
+	Get(context.Context, *GetRequest) (*TodoList, error)
+	Save(context.Context, *Todo) (*Todo, error)
+	Find(context.Context, *Todo) (*Todo, error)
+	Update(context.Context, *Todo) (*Todo, error)
+	Delete(context.Context, *Todo) (*GetRequest, error)
 	mustEmbedUnimplementedTodosServer()
 }
 
@@ -83,17 +94,20 @@ type TodosServer interface {
 type UnimplementedTodosServer struct {
 }
 
-func (UnimplementedTodosServer) Get(context.Context, *GetRequest) (*TodoListReply, error) {
+func (UnimplementedTodosServer) Get(context.Context, *GetRequest) (*TodoList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedTodosServer) Save(context.Context, *TodoRequest) (*TodoReply, error) {
+func (UnimplementedTodosServer) Save(context.Context, *Todo) (*Todo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Save not implemented")
 }
-func (UnimplementedTodosServer) Find(context.Context, *TodoIdentifier) (*TodoReply, error) {
+func (UnimplementedTodosServer) Find(context.Context, *Todo) (*Todo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Find not implemented")
 }
-func (UnimplementedTodosServer) Update(context.Context, *TodoUpdate) (*TodoReply, error) {
+func (UnimplementedTodosServer) Update(context.Context, *Todo) (*Todo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedTodosServer) Delete(context.Context, *Todo) (*GetRequest, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedTodosServer) mustEmbedUnimplementedTodosServer() {}
 
@@ -127,7 +141,7 @@ func _Todos_Get_Handler(srv interface{}, ctx context.Context, dec func(interface
 }
 
 func _Todos_Save_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TodoRequest)
+	in := new(Todo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -139,13 +153,13 @@ func _Todos_Save_Handler(srv interface{}, ctx context.Context, dec func(interfac
 		FullMethod: "/proto.Todos/Save",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TodosServer).Save(ctx, req.(*TodoRequest))
+		return srv.(TodosServer).Save(ctx, req.(*Todo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Todos_Find_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TodoIdentifier)
+	in := new(Todo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -157,13 +171,13 @@ func _Todos_Find_Handler(srv interface{}, ctx context.Context, dec func(interfac
 		FullMethod: "/proto.Todos/Find",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TodosServer).Find(ctx, req.(*TodoIdentifier))
+		return srv.(TodosServer).Find(ctx, req.(*Todo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Todos_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TodoUpdate)
+	in := new(Todo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -175,7 +189,25 @@ func _Todos_Update_Handler(srv interface{}, ctx context.Context, dec func(interf
 		FullMethod: "/proto.Todos/Update",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TodosServer).Update(ctx, req.(*TodoUpdate))
+		return srv.(TodosServer).Update(ctx, req.(*Todo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Todos_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Todo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TodosServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Todos/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TodosServer).Delete(ctx, req.(*Todo))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -202,6 +234,10 @@ var Todos_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Update",
 			Handler:    _Todos_Update_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _Todos_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

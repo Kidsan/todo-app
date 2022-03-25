@@ -22,30 +22,30 @@ func (g *Server) buildTodoServer() pb.TodosServer {
 	}
 }
 
-func (t TodoGRPCHandler) Get(ctx context.Context, _ *pb.GetRequest) (*pb.TodoListReply, error) {
+func (t TodoGRPCHandler) Get(ctx context.Context, _ *pb.GetRequest) (*pb.TodoList, error) {
 	todos, err := t.service.GetAll(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("ports(todos): could not get all todos %w", err)
 	}
 
-	r := &pb.TodoListReply{}
+	r := &pb.TodoList{}
 	for _, v := range todos {
-		var tasks []*pb.TaskReply
-
-		todo := &pb.TodoReply{
-			Id:          v.ID,
-			Name:        v.Name,
-			Description: v.Description,
-		}
+		var tasks []*pb.Task
 
 		for _, j := range v.Tasks {
-			tasks = append(tasks, &pb.TaskReply{
-				Id:   j.ID,
-				Name: j.Name,
+			tasks = append(tasks, &pb.Task{
+				Id:     j.ID,
+				TodoId: j.TodoID,
+				Name:   j.Name,
 			})
 		}
 
-		todo.Tasks = append(todo.Tasks, tasks...)
+		todo := &pb.Todo{
+			Id:          v.ID,
+			Name:        v.Name,
+			Description: v.Description,
+			Tasks:       tasks,
+		}
 
 		r.Todos = append(r.Todos, todo)
 	}
@@ -53,7 +53,7 @@ func (t TodoGRPCHandler) Get(ctx context.Context, _ *pb.GetRequest) (*pb.TodoLis
 	return r, nil
 }
 
-func (t TodoGRPCHandler) Save(ctx context.Context, newTodoRequest *pb.TodoRequest) (*pb.TodoReply, error) {
+func (t TodoGRPCHandler) Save(ctx context.Context, newTodoRequest *pb.Todo) (*pb.Todo, error) {
 	var tasks []todoapp.Task
 
 	for _, v := range newTodoRequest.GetTasks() {
@@ -70,66 +70,49 @@ func (t TodoGRPCHandler) Save(ctx context.Context, newTodoRequest *pb.TodoReques
 	}
 	result, err := t.service.Update(ctx, newTodo)
 	if err != nil {
-		return &pb.TodoReply{}, fmt.Errorf("ports(todos): could not save new todo %w", err)
+		return &pb.Todo{}, fmt.Errorf("ports(todos): could not save new todo %w", err)
 	}
 
-	var savedTasks []*pb.TaskReply
+	var savedTasks []*pb.Task
 	for _, j := range result.Tasks {
-		savedTasks = append(savedTasks, &pb.TaskReply{
-			Id:   j.ID,
-			Name: j.Name,
+		savedTasks = append(savedTasks, &pb.Task{
+			Id:     j.ID,
+			TodoId: j.TodoID,
+			Name:   j.Name,
 		})
 	}
 
-	return &pb.TodoReply{Id: result.ID, Name: result.Name, Description: result.Description, Tasks: savedTasks}, nil
+	return &pb.Todo{Id: result.ID, Name: result.Name, Description: result.Description, Tasks: savedTasks}, nil
 
 }
 
-func (t TodoGRPCHandler) Find(ctx context.Context, toFind *pb.TodoIdentifier) (*pb.TodoReply, error) {
+func (t TodoGRPCHandler) Find(ctx context.Context, toFind *pb.Todo) (*pb.Todo, error) {
 	result, err := t.service.Find(ctx, todoapp.Todo{
 		ID: toFind.Id,
 	})
 	if err != nil {
-		return &pb.TodoReply{}, fmt.Errorf("ports(todo): could not find todo %w", err)
+		return &pb.Todo{}, fmt.Errorf("ports(todo): could not find todo %w", err)
 	}
 
-	var tasks []*pb.TaskReply
+	var tasks []*pb.Task
 	for _, j := range result.Tasks {
-		tasks = append(tasks, &pb.TaskReply{
-			Id:   j.ID,
-			Name: j.Name,
+		tasks = append(tasks, &pb.Task{
+			Id:     j.ID,
+			TodoId: j.TodoID,
+			Name:   j.Name,
 		})
 	}
 
-	return &pb.TodoReply{Id: result.ID, Name: result.Name, Description: result.Description, Tasks: tasks}, nil
+	return &pb.Todo{Id: result.ID, Name: result.Name, Description: result.Description, Tasks: tasks}, nil
 }
 
-// func (t TodoGRPCHandler) Update(ctx context.Context, updated *pb.TodoUpdate) (*pb.TodoReply, error) {
+func (t TodoGRPCHandler) Delete(ctx context.Context, toDelete *pb.Todo) (*pb.GetRequest, error) {
+	err := t.service.Delete(ctx, todoapp.Todo{
+		ID: toDelete.Id,
+	})
+	if err != nil {
+		return &pb.GetRequest{}, fmt.Errorf("ports(todo): could not find todo %w", err)
+	}
 
-// 	var tasks []todoapp.Task
-
-// 	for _, v := range updated.GetTasks() {
-// 		tasks = append(tasks, todoapp.Task{
-// 			Name: v.GetName(),
-// 		})
-// 	}
-
-// 	result, err := t.service.Update(ctx, todoapp.Todo{
-// 		ID:          updated.Id,
-// 		Name:        updated.Name,
-// 		Description: updated.Description,
-// 		Tasks:       tasks,
-// 	})
-// 	if err != nil {
-// 		return &pb.TodoReply{}, fmt.Errorf("ports(todo): could not find todo %w", err)
-// 	}
-
-// 	var updatedTasks []*pb.TaskReply
-// 	for _, j := range result.Tasks {
-// 		updatedTasks = append(updatedTasks, &pb.TaskReply{
-// 			Name: j.Name,
-// 		})
-// 	}
-
-// 	return &pb.TodoReply{Name: result.Name, Description: result.Description, Tasks: updatedTasks}, nil
-// }
+	return &pb.GetRequest{}, nil
+}

@@ -20,19 +20,19 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type TodoRequest struct {
+type Todo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          int32          `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name        string         `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Description string         `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	Tasks       []*TaskRequest `protobuf:"bytes,4,rep,name=tasks,proto3" json:"tasks,omitempty"`
+	Id          int32   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name        string  `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Description string  `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Tasks       []*Task `protobuf:"bytes,4,rep,name=tasks,proto3" json:"tasks,omitempty"`
 }
 
-func (x *TodoRequest) Reset() {
-	*x = TodoRequest{}
+func (x *Todo) Reset() {
+	*x = Todo{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_todo_app_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -40,13 +40,13 @@ func (x *TodoRequest) Reset() {
 	}
 }
 
-func (x *TodoRequest) String() string {
+func (x *Todo) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TodoRequest) ProtoMessage() {}
+func (*Todo) ProtoMessage() {}
 
-func (x *TodoRequest) ProtoReflect() protoreflect.Message {
+func (x *Todo) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_todo_app_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -58,52 +58,49 @@ func (x *TodoRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TodoRequest.ProtoReflect.Descriptor instead.
-func (*TodoRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use Todo.ProtoReflect.Descriptor instead.
+func (*Todo) Descriptor() ([]byte, []int) {
 	return file_proto_todo_app_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *TodoRequest) GetId() int32 {
+func (x *Todo) GetId() int32 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-func (x *TodoRequest) GetName() string {
+func (x *Todo) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *TodoRequest) GetDescription() string {
+func (x *Todo) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *TodoRequest) GetTasks() []*TaskRequest {
+func (x *Todo) GetTasks() []*Task {
 	if x != nil {
 		return x.Tasks
 	}
 	return nil
 }
 
-type TodoReply struct {
+type TodoList struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id          int32        `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name        string       `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Description string       `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	Tasks       []*TaskReply `protobuf:"bytes,4,rep,name=tasks,proto3" json:"tasks,omitempty"`
+	Todos []*Todo `protobuf:"bytes,1,rep,name=todos,proto3" json:"todos,omitempty"`
 }
 
-func (x *TodoReply) Reset() {
-	*x = TodoReply{}
+func (x *TodoList) Reset() {
+	*x = TodoList{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_proto_todo_app_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -111,13 +108,13 @@ func (x *TodoReply) Reset() {
 	}
 }
 
-func (x *TodoReply) String() string {
+func (x *TodoList) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TodoReply) ProtoMessage() {}
+func (*TodoList) ProtoMessage() {}
 
-func (x *TodoReply) ProtoReflect() protoreflect.Message {
+func (x *TodoList) ProtoReflect() protoreflect.Message {
 	mi := &file_proto_todo_app_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -129,198 +126,12 @@ func (x *TodoReply) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TodoReply.ProtoReflect.Descriptor instead.
-func (*TodoReply) Descriptor() ([]byte, []int) {
+// Deprecated: Use TodoList.ProtoReflect.Descriptor instead.
+func (*TodoList) Descriptor() ([]byte, []int) {
 	return file_proto_todo_app_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *TodoReply) GetId() int32 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *TodoReply) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *TodoReply) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
-}
-
-func (x *TodoReply) GetTasks() []*TaskReply {
-	if x != nil {
-		return x.Tasks
-	}
-	return nil
-}
-
-type TodoUpdate struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id          int32          `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name        string         `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Description string         `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	Tasks       []*TaskRequest `protobuf:"bytes,4,rep,name=tasks,proto3" json:"tasks,omitempty"`
-}
-
-func (x *TodoUpdate) Reset() {
-	*x = TodoUpdate{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_todo_app_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *TodoUpdate) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TodoUpdate) ProtoMessage() {}
-
-func (x *TodoUpdate) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_todo_app_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TodoUpdate.ProtoReflect.Descriptor instead.
-func (*TodoUpdate) Descriptor() ([]byte, []int) {
-	return file_proto_todo_app_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *TodoUpdate) GetId() int32 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *TodoUpdate) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *TodoUpdate) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
-}
-
-func (x *TodoUpdate) GetTasks() []*TaskRequest {
-	if x != nil {
-		return x.Tasks
-	}
-	return nil
-}
-
-type TodoIdentifier struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id int32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (x *TodoIdentifier) Reset() {
-	*x = TodoIdentifier{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_todo_app_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *TodoIdentifier) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TodoIdentifier) ProtoMessage() {}
-
-func (x *TodoIdentifier) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_todo_app_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TodoIdentifier.ProtoReflect.Descriptor instead.
-func (*TodoIdentifier) Descriptor() ([]byte, []int) {
-	return file_proto_todo_app_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *TodoIdentifier) GetId() int32 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-type TodoListReply struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Todos []*TodoReply `protobuf:"bytes,1,rep,name=todos,proto3" json:"todos,omitempty"`
-}
-
-func (x *TodoListReply) Reset() {
-	*x = TodoListReply{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_todo_app_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *TodoListReply) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TodoListReply) ProtoMessage() {}
-
-func (x *TodoListReply) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_todo_app_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TodoListReply.ProtoReflect.Descriptor instead.
-func (*TodoListReply) Descriptor() ([]byte, []int) {
-	return file_proto_todo_app_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *TodoListReply) GetTodos() []*TodoReply {
+func (x *TodoList) GetTodos() []*Todo {
 	if x != nil {
 		return x.Todos
 	}
@@ -336,7 +147,7 @@ type GetRequest struct {
 func (x *GetRequest) Reset() {
 	*x = GetRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_todo_app_proto_msgTypes[5]
+		mi := &file_proto_todo_app_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -349,7 +160,7 @@ func (x *GetRequest) String() string {
 func (*GetRequest) ProtoMessage() {}
 
 func (x *GetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_todo_app_proto_msgTypes[5]
+	mi := &file_proto_todo_app_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -362,35 +173,36 @@ func (x *GetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetRequest.ProtoReflect.Descriptor instead.
 func (*GetRequest) Descriptor() ([]byte, []int) {
-	return file_proto_todo_app_proto_rawDescGZIP(), []int{5}
+	return file_proto_todo_app_proto_rawDescGZIP(), []int{2}
 }
 
-type TaskReply struct {
+type Task struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id   int32  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Id     int32  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	TodoId int32  `protobuf:"varint,2,opt,name=todoId,proto3" json:"todoId,omitempty"`
+	Name   string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 }
 
-func (x *TaskReply) Reset() {
-	*x = TaskReply{}
+func (x *Task) Reset() {
+	*x = Task{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_todo_app_proto_msgTypes[6]
+		mi := &file_proto_todo_app_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *TaskReply) String() string {
+func (x *Task) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*TaskReply) ProtoMessage() {}
+func (*Task) ProtoMessage() {}
 
-func (x *TaskReply) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_todo_app_proto_msgTypes[6]
+func (x *Task) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_todo_app_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -401,74 +213,26 @@ func (x *TaskReply) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use TaskReply.ProtoReflect.Descriptor instead.
-func (*TaskReply) Descriptor() ([]byte, []int) {
-	return file_proto_todo_app_proto_rawDescGZIP(), []int{6}
+// Deprecated: Use Task.ProtoReflect.Descriptor instead.
+func (*Task) Descriptor() ([]byte, []int) {
+	return file_proto_todo_app_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *TaskReply) GetId() int32 {
+func (x *Task) GetId() int32 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-func (x *TaskReply) GetName() string {
+func (x *Task) GetTodoId() int32 {
 	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-type TaskRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Id   int32  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-}
-
-func (x *TaskRequest) Reset() {
-	*x = TaskRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_todo_app_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *TaskRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TaskRequest) ProtoMessage() {}
-
-func (x *TaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_todo_app_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TaskRequest.ProtoReflect.Descriptor instead.
-func (*TaskRequest) Descriptor() ([]byte, []int) {
-	return file_proto_todo_app_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *TaskRequest) GetId() int32 {
-	if x != nil {
-		return x.Id
+		return x.TodoId
 	}
 	return 0
 }
 
-func (x *TaskRequest) GetName() string {
+func (x *Task) GetName() string {
 	if x != nil {
 		return x.Name
 	}
@@ -479,59 +243,38 @@ var File_proto_todo_app_proto protoreflect.FileDescriptor
 
 var file_proto_todo_app_proto_rawDesc = []byte{
 	0x0a, 0x14, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x74, 0x6f, 0x64, 0x6f, 0x2d, 0x61, 0x70, 0x70,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x7d, 0x0a,
-	0x0b, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04,
-	0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65,
-	0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x28, 0x0a, 0x05, 0x74, 0x61, 0x73, 0x6b, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28,
-	0x0b, 0x32, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65,
-	0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x05, 0x74, 0x61, 0x73, 0x6b, 0x73, 0x22, 0x79, 0x0a, 0x09,
-	0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a,
-	0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12,
-	0x26, 0x0a, 0x05, 0x74, 0x61, 0x73, 0x6b, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x10,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x70, 0x6c, 0x79,
-	0x52, 0x05, 0x74, 0x61, 0x73, 0x6b, 0x73, 0x22, 0x7c, 0x0a, 0x0a, 0x54, 0x6f, 0x64, 0x6f, 0x55,
-	0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x6f, 0x0a,
+	0x04, 0x54, 0x6f, 0x64, 0x6f, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x05, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20,
 	0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73,
 	0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b,
-	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x28, 0x0a, 0x05, 0x74,
-	0x61, 0x73, 0x6b, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x05,
-	0x74, 0x61, 0x73, 0x6b, 0x73, 0x22, 0x20, 0x0a, 0x0e, 0x54, 0x6f, 0x64, 0x6f, 0x49, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x22, 0x37, 0x0a, 0x0d, 0x54, 0x6f, 0x64, 0x6f, 0x4c,
-	0x69, 0x73, 0x74, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x26, 0x0a, 0x05, 0x74, 0x6f, 0x64, 0x6f,
-	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
-	0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x52, 0x05, 0x74, 0x6f, 0x64, 0x6f, 0x73,
-	0x22, 0x0c, 0x0a, 0x0a, 0x47, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x2f,
-	0x0a, 0x09, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x0e, 0x0a, 0x02, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e,
-	0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x22,
-	0x31, 0x0a, 0x0b, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e,
-	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12,
-	0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61,
-	0x6d, 0x65, 0x32, 0xcd, 0x01, 0x0a, 0x05, 0x54, 0x6f, 0x64, 0x6f, 0x73, 0x12, 0x30, 0x0a, 0x03,
-	0x47, 0x65, 0x74, 0x12, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54,
-	0x6f, 0x64, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x2e,
-	0x0a, 0x04, 0x53, 0x61, 0x76, 0x65, 0x12, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54,
-	0x6f, 0x64, 0x6f, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x10, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x31,
-	0x0a, 0x04, 0x46, 0x69, 0x6e, 0x64, 0x12, 0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54,
-	0x6f, 0x64, 0x6f, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x1a, 0x10, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22,
-	0x00, 0x12, 0x2f, 0x0a, 0x06, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x11, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x1a, 0x10,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x65, 0x70, 0x6c, 0x79,
-	0x22, 0x00, 0x42, 0x22, 0x5a, 0x20, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x6b, 0x69, 0x64, 0x73, 0x61, 0x6e, 0x2f, 0x74, 0x6f, 0x64, 0x6f, 0x2d, 0x61, 0x70, 0x70,
-	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x21, 0x0a, 0x05, 0x74,
+	0x61, 0x73, 0x6b, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x05, 0x74, 0x61, 0x73, 0x6b, 0x73, 0x22, 0x2d,
+	0x0a, 0x08, 0x54, 0x6f, 0x64, 0x6f, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x21, 0x0a, 0x05, 0x74, 0x6f,
+	0x64, 0x6f, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x52, 0x05, 0x74, 0x6f, 0x64, 0x6f, 0x73, 0x22, 0x0c, 0x0a,
+	0x0a, 0x47, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x42, 0x0a, 0x04, 0x54,
+	0x61, 0x73, 0x6b, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
+	0x02, 0x69, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x74, 0x6f, 0x64, 0x6f, 0x49, 0x64, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x05, 0x52, 0x06, 0x74, 0x6f, 0x64, 0x6f, 0x49, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e,
+	0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x32,
+	0xce, 0x01, 0x0a, 0x05, 0x54, 0x6f, 0x64, 0x6f, 0x73, 0x12, 0x2b, 0x0a, 0x03, 0x47, 0x65, 0x74,
+	0x12, 0x11, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x0f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x6f, 0x64, 0x6f,
+	0x4c, 0x69, 0x73, 0x74, 0x22, 0x00, 0x12, 0x22, 0x0a, 0x04, 0x53, 0x61, 0x76, 0x65, 0x12, 0x0b,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x1a, 0x0b, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x22, 0x00, 0x12, 0x22, 0x0a, 0x04, 0x46, 0x69,
+	0x6e, 0x64, 0x12, 0x0b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x1a,
+	0x0b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x22, 0x00, 0x12, 0x24,
+	0x0a, 0x06, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x12, 0x0b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x1a, 0x0b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x6f,
+	0x64, 0x6f, 0x22, 0x00, 0x12, 0x2a, 0x0a, 0x06, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x12, 0x0b,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x54, 0x6f, 0x64, 0x6f, 0x1a, 0x11, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x00,
+	0x42, 0x22, 0x5a, 0x20, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6b,
+	0x69, 0x64, 0x73, 0x61, 0x6e, 0x2f, 0x74, 0x6f, 0x64, 0x6f, 0x2d, 0x61, 0x70, 0x70, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -546,35 +289,31 @@ func file_proto_todo_app_proto_rawDescGZIP() []byte {
 	return file_proto_todo_app_proto_rawDescData
 }
 
-var file_proto_todo_app_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_proto_todo_app_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_proto_todo_app_proto_goTypes = []interface{}{
-	(*TodoRequest)(nil),    // 0: proto.TodoRequest
-	(*TodoReply)(nil),      // 1: proto.TodoReply
-	(*TodoUpdate)(nil),     // 2: proto.TodoUpdate
-	(*TodoIdentifier)(nil), // 3: proto.TodoIdentifier
-	(*TodoListReply)(nil),  // 4: proto.TodoListReply
-	(*GetRequest)(nil),     // 5: proto.GetRequest
-	(*TaskReply)(nil),      // 6: proto.TaskReply
-	(*TaskRequest)(nil),    // 7: proto.TaskRequest
+	(*Todo)(nil),       // 0: proto.Todo
+	(*TodoList)(nil),   // 1: proto.TodoList
+	(*GetRequest)(nil), // 2: proto.GetRequest
+	(*Task)(nil),       // 3: proto.Task
 }
 var file_proto_todo_app_proto_depIdxs = []int32{
-	7, // 0: proto.TodoRequest.tasks:type_name -> proto.TaskRequest
-	6, // 1: proto.TodoReply.tasks:type_name -> proto.TaskReply
-	7, // 2: proto.TodoUpdate.tasks:type_name -> proto.TaskRequest
-	1, // 3: proto.TodoListReply.todos:type_name -> proto.TodoReply
-	5, // 4: proto.Todos.Get:input_type -> proto.GetRequest
-	0, // 5: proto.Todos.Save:input_type -> proto.TodoRequest
-	3, // 6: proto.Todos.Find:input_type -> proto.TodoIdentifier
-	2, // 7: proto.Todos.Update:input_type -> proto.TodoUpdate
-	4, // 8: proto.Todos.Get:output_type -> proto.TodoListReply
-	1, // 9: proto.Todos.Save:output_type -> proto.TodoReply
-	1, // 10: proto.Todos.Find:output_type -> proto.TodoReply
-	1, // 11: proto.Todos.Update:output_type -> proto.TodoReply
-	8, // [8:12] is the sub-list for method output_type
-	4, // [4:8] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	3, // 0: proto.Todo.tasks:type_name -> proto.Task
+	0, // 1: proto.TodoList.todos:type_name -> proto.Todo
+	2, // 2: proto.Todos.Get:input_type -> proto.GetRequest
+	0, // 3: proto.Todos.Save:input_type -> proto.Todo
+	0, // 4: proto.Todos.Find:input_type -> proto.Todo
+	0, // 5: proto.Todos.Update:input_type -> proto.Todo
+	0, // 6: proto.Todos.Delete:input_type -> proto.Todo
+	1, // 7: proto.Todos.Get:output_type -> proto.TodoList
+	0, // 8: proto.Todos.Save:output_type -> proto.Todo
+	0, // 9: proto.Todos.Find:output_type -> proto.Todo
+	0, // 10: proto.Todos.Update:output_type -> proto.Todo
+	2, // 11: proto.Todos.Delete:output_type -> proto.GetRequest
+	7, // [7:12] is the sub-list for method output_type
+	2, // [2:7] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_todo_app_proto_init() }
@@ -584,7 +323,7 @@ func file_proto_todo_app_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_proto_todo_app_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TodoRequest); i {
+			switch v := v.(*Todo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -596,7 +335,7 @@ func file_proto_todo_app_proto_init() {
 			}
 		}
 		file_proto_todo_app_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TodoReply); i {
+			switch v := v.(*TodoList); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -608,42 +347,6 @@ func file_proto_todo_app_proto_init() {
 			}
 		}
 		file_proto_todo_app_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TodoUpdate); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_todo_app_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TodoIdentifier); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_todo_app_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TodoListReply); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_todo_app_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GetRequest); i {
 			case 0:
 				return &v.state
@@ -655,20 +358,8 @@ func file_proto_todo_app_proto_init() {
 				return nil
 			}
 		}
-		file_proto_todo_app_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskReply); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_proto_todo_app_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TaskRequest); i {
+		file_proto_todo_app_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Task); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -686,7 +377,7 @@ func file_proto_todo_app_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_todo_app_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

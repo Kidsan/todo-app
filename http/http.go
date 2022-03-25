@@ -47,13 +47,16 @@ func (c *Client) GetAll() ([]todoapp.Todo, error) {
 
 		for _, v := range v.Tasks {
 			tasks = append(tasks, todoapp.Task{
-				Name: v.Name,
+				ID:     v.Id,
+				TodoID: v.TodoId,
+				Name:   v.Name,
 			})
 		}
 		if err != nil {
 			continue
 		}
 		result = append(result, todoapp.Todo{
+			ID:          v.Id,
 			Name:        v.Name,
 			Description: v.Description,
 			Tasks:       tasks,
@@ -63,15 +66,15 @@ func (c *Client) GetAll() ([]todoapp.Todo, error) {
 }
 
 func (c *Client) Save(newTodo todoapp.Todo) (todoapp.Todo, error) {
-	var tasks []*pb.TaskRequest
+	var tasks []*pb.Task
 
 	for _, v := range newTodo.Tasks {
-		tasks = append(tasks, &pb.TaskRequest{
+		tasks = append(tasks, &pb.Task{
 			Id:   v.ID,
 			Name: v.Name,
 		})
 	}
-	todo, err := c.grpc.Save(context.Background(), &pb.TodoRequest{
+	todo, err := c.grpc.Save(context.Background(), &pb.Todo{
 		Id:          newTodo.ID,
 		Name:        newTodo.Name,
 		Description: newTodo.Description,
@@ -86,8 +89,9 @@ func (c *Client) Save(newTodo todoapp.Todo) (todoapp.Todo, error) {
 
 	for _, v := range todo.Tasks {
 		savedTasks = append(savedTasks, todoapp.Task{
-			ID:   v.Id,
-			Name: v.Name,
+			ID:     v.Id,
+			TodoID: v.TodoId,
+			Name:   v.Name,
 		})
 	}
 
@@ -100,7 +104,7 @@ func (c *Client) Save(newTodo todoapp.Todo) (todoapp.Todo, error) {
 }
 
 func (c *Client) Find(toFind todoapp.Todo) (todoapp.Todo, error) {
-	todo, err := c.grpc.Find(context.Background(), &pb.TodoIdentifier{Id: toFind.ID})
+	todo, err := c.grpc.Find(context.Background(), &pb.Todo{Id: toFind.ID})
 	if err != nil {
 		return todoapp.Todo{}, err
 	}
@@ -112,22 +116,23 @@ func (c *Client) Find(toFind todoapp.Todo) (todoapp.Todo, error) {
 	}
 	for _, v := range todo.Tasks {
 		result.Tasks = append(result.Tasks, todoapp.Task{
-			ID:   v.Id,
-			Name: v.Name,
+			ID:     v.Id,
+			TodoID: v.TodoId,
+			Name:   v.Name,
 		})
 	}
 	return result, nil
 }
 
 func (c *Client) Update(toUpdate todoapp.Todo) (todoapp.Todo, error) {
-	var tasks []*pb.TaskRequest
+	var tasks []*pb.Task
 
 	for _, v := range toUpdate.Tasks {
-		tasks = append(tasks, &pb.TaskRequest{
+		tasks = append(tasks, &pb.Task{
 			Name: v.Name,
 		})
 	}
-	todo, err := c.grpc.Save(context.Background(), &pb.TodoRequest{
+	todo, err := c.grpc.Save(context.Background(), &pb.Todo{
 		Name:        toUpdate.Name,
 		Description: toUpdate.Description,
 		Tasks:       tasks,
@@ -141,7 +146,9 @@ func (c *Client) Update(toUpdate todoapp.Todo) (todoapp.Todo, error) {
 
 	for _, v := range savedTasks {
 		savedTasks = append(savedTasks, todoapp.Task{
-			Name: v.Name,
+			ID:     v.TodoID,
+			TodoID: v.TodoID,
+			Name:   v.Name,
 		})
 	}
 
@@ -150,4 +157,13 @@ func (c *Client) Update(toUpdate todoapp.Todo) (todoapp.Todo, error) {
 		Description: todo.Description,
 		Tasks:       savedTasks,
 	}, nil
+}
+
+func (c *Client) Delete(toDelete todoapp.Todo) error {
+	_, err := c.grpc.Delete(context.Background(), &pb.Todo{Id: toDelete.ID})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
