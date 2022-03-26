@@ -91,7 +91,7 @@ func (t TodoGRPCHandler) Find(ctx context.Context, toFind *pb.Todo) (*pb.Todo, e
 		ID: toFind.Id,
 	})
 	if err != nil {
-		return &pb.Todo{}, fmt.Errorf("ports(todo): could not find todo %w", err)
+		return nil, fmt.Errorf("could not find todo")
 	}
 
 	var tasks []*pb.Task

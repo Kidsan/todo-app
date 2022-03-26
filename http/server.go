@@ -20,7 +20,7 @@ type Server struct {
 	todoService todoapp.TodoService
 }
 
-func NewServer(config todoapp.Config, logger *zap.Logger, todoService todoapp.TodoService) *Server {
+func NewServer(config todoapp.APIConfig, logger *zap.Logger, todoService todoapp.TodoService) *Server {
 	server := &Server{
 		config:      config.Server,
 		logger:      logger,

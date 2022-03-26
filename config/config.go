@@ -7,19 +7,23 @@ import (
 	"github.com/spf13/viper"
 )
 
-func Read() (todoapp.Config, error) {
+func ReadTodoCLIConfig() (todoapp.CLIConfig, error) {
+	return todoapp.CLIConfig{}, nil
+}
+
+func Read() (todoapp.APIConfig, error) {
 	viper.AddConfigPath(".")
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		return todoapp.Config{}, err
+		return todoapp.APIConfig{}, err
 	}
 
-	var config todoapp.Config
+	var config todoapp.APIConfig
 	if err := viper.Unmarshal(&config); err != nil {
-		return todoapp.Config{}, fmt.Errorf("unable to decode into struct: %w", err)
+		return todoapp.APIConfig{}, fmt.Errorf("unable to decode into struct: %w", err)
 	}
 
 	return config, nil

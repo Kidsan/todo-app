@@ -2,9 +2,13 @@ package todoapp
 
 import "fmt"
 
-type Config struct {
+type APIConfig struct {
 	Database DatabaseConfig `mapstructure:",squash"`
 	Server   ServerConfig   `mapstructure:",squash"`
+}
+
+type CLIConfig struct {
+	Server ServerConfig `mapstructure:",squash"`
 }
 
 type ServerConfig struct {
