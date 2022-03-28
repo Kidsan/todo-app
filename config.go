@@ -12,7 +12,8 @@ type CLIConfig struct {
 }
 
 type ServerConfig struct {
-	Port int `mapstructure:"APPLICATION_PORT"`
+	Host string `mapstructure:"APPLICATION_HOST"`
+	Port int    `mapstructure:"APPLICATION_PORT"`
 }
 
 type DatabaseConfig struct {

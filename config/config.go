@@ -8,7 +8,20 @@ import (
 )
 
 func ReadTodoCLIConfig() (todoapp.CLIConfig, error) {
-	return todoapp.CLIConfig{}, nil
+	viper.AddConfigPath(".")
+	viper.SetConfigName("app")
+	viper.SetConfigType("env")
+	viper.AutomaticEnv()
+
+	if err := viper.ReadInConfig(); err != nil {
+		return todoapp.CLIConfig{}, err
+	}
+
+	var config todoapp.CLIConfig
+	if err := viper.Unmarshal(&config); err != nil {
+		return todoapp.CLIConfig{}, fmt.Errorf("unable to decode into struct: %w", err)
+	}
+	return config, nil
 }
 
 func Read() (todoapp.APIConfig, error) {

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	todoapp "github.com/kidsan/todo-app"
 	"github.com/kidsan/todo-app/config"
 	"github.com/spf13/cobra"
@@ -12,7 +14,7 @@ var Verbose bool
 func main() {
 	config, err := config.ReadTodoCLIConfig()
 	cobra.CheckErr(err)
-
+	fmt.Print(config)
 	cmd := NewRootCommand(config)
 
 	cobra.CheckErr(cmd.Execute())
