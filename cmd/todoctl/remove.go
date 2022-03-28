@@ -40,7 +40,7 @@ func newDeleteTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
 			if id == 0 {
 				cobra.CheckErr(fmt.Errorf("invalid id"))
 			}
-			client := http.NewClient("0.0.0.0:3000")
+			client := http.NewClient(fmt.Sprintf("%s:%v", cfg.Server.Host, cfg.Server.Port))
 			defer client.Close()
 
 			err = client.Delete(todoapp.Todo{ID: int32(id)})

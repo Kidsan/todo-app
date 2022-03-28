@@ -29,7 +29,7 @@ func newGetTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
 		Aliases: []string{"todos"},
 		Short:   "show todos",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := http.NewClient("0.0.0.0:3000")
+			client := http.NewClient(fmt.Sprintf("%s:%v", cfg.Server.Host, cfg.Server.Port))
 			defer client.Close()
 			if len(args) == 0 {
 				todos, err := client.GetAll()

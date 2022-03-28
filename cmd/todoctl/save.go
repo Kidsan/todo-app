@@ -29,7 +29,6 @@ func newSaveTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
 		Short:   "show todos",
 		Run: func(cmd *cobra.Command, args []string) {
 			client := http.NewClient(fmt.Sprintf("%s:%v", cfg.Server.Host, cfg.Server.Port))
-			fmt.Printf("%s:%v", cfg.Server.Host, cfg.Server.Port)
 			defer client.Close()
 
 			newTodo := todoapp.Todo{
