@@ -9,7 +9,7 @@ import (
 func NewSaveCommand(cfg todoapp.CLIConfig) *cobra.Command {
 	cmdGet := &cobra.Command{
 		Use:     "save",
-		Aliases: []string{"show"},
+		Aliases: []string{"save", "create", "update", "apply"},
 		Short:   "save resources",
 	}
 

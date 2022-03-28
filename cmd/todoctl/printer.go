@@ -15,7 +15,7 @@ func Infof(msg string, args ...interface{}) {
 	fmt.Printf(msg+"\n", args...)
 }
 
-func PrintObject[T any](object ...T) error {
+func PrintObject(object ...any) error {
 	var result []string
 	for i := 0; i < len(object); i++ {
 		content, err := yaml.Marshal(object[i])
