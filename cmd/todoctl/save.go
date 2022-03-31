@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	todoapp "github.com/kidsan/todo-app"
 	"github.com/kidsan/todo-app/http"
@@ -26,6 +27,7 @@ func newSaveTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
 	var todoName string
 	var description string
 	var tasks []string
+	var id int32
 
 	cmd := &cobra.Command{
 		Use:     "todo",
@@ -41,7 +43,16 @@ func newSaveTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
 				tasksToCreate = append(tasksToCreate, todoapp.Task{Name: v})
 			}
 
+			if len(args) == 1 {
+				a, err := strconv.Atoi(args[0])
+				if err != nil {
+					cobra.CheckErr(fmt.Errorf("invalid todo id: %s", args[0]))
+				}
+				id = int32(a)
+			}
+
 			newTodo := todoapp.Todo{
+				ID:          id,
 				Name:        todoName,
 				Description: description,
 				Tasks:       tasksToCreate,
