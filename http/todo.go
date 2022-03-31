@@ -25,7 +25,7 @@ func (g *Server) buildTodoServer() pb.TodosServer {
 func (t TodoGRPCHandler) Get(ctx context.Context, _ *pb.GetRequest) (*pb.TodoList, error) {
 	todos, err := t.service.GetAll(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("ports(todos): could not get all todos %w", err)
+		return nil, fmt.Errorf("could not get all todos %w", err)
 	}
 
 	r := &pb.TodoList{}
@@ -70,7 +70,7 @@ func (t TodoGRPCHandler) Save(ctx context.Context, newTodoRequest *pb.Todo) (*pb
 	}
 	result, err := t.service.Update(ctx, newTodo)
 	if err != nil {
-		return &pb.Todo{}, fmt.Errorf("ports(todos): could not save new todo %w", err)
+		return &pb.Todo{}, fmt.Errorf("could not save new todo %w", err)
 	}
 
 	var savedTasks []*pb.Task
@@ -111,7 +111,7 @@ func (t TodoGRPCHandler) Delete(ctx context.Context, toDelete *pb.Todo) (*pb.Get
 		ID: toDelete.Id,
 	})
 	if err != nil {
-		return &pb.GetRequest{}, fmt.Errorf("ports(todo): could not find todo %w", err)
+		return &pb.GetRequest{}, fmt.Errorf("could not find todo %w", err)
 	}
 
 	return &pb.GetRequest{}, nil

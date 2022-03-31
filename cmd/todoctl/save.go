@@ -23,21 +23,28 @@ func NewSaveCommand(cfg todoapp.CLIConfig) *cobra.Command {
 }
 
 func newSaveTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
+	var todoName string
+	var description string
+	var tasks []string
+
 	cmd := &cobra.Command{
 		Use:     "todo",
 		Aliases: []string{"todos"},
-		Short:   "show todos",
+		Short:   "create todos",
 		Run: func(cmd *cobra.Command, args []string) {
 			client := http.NewClient(fmt.Sprintf("%s:%v", cfg.Server.Host, cfg.Server.Port))
 			defer client.Close()
 
+			var tasksToCreate []todoapp.Task
+
+			for _, v := range tasks {
+				tasksToCreate = append(tasksToCreate, todoapp.Task{Name: v})
+			}
+
 			newTodo := todoapp.Todo{
-				Name:        "Clean the house",
-				Description: "Better get to it son!",
-				Tasks: []todoapp.Task{
-					{Name: "Clean up Task"},
-					{Name: "Tear down Task"},
-				},
+				Name:        todoName,
+				Description: description,
+				Tasks:       tasksToCreate,
 			}
 
 			res, err := client.Save(newTodo)
@@ -45,6 +52,10 @@ func newSaveTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
 			PrintObject(res)
 		},
 	}
+
+	cmd.Flags().StringVarP(&todoName, "name", "n", "", "name of the todo item")
+	cmd.Flags().StringVarP(&description, "description", "d", "", "description of the todo item")
+	cmd.Flags().StringArrayVarP(&tasks, "task", "t", []string{}, "tasks to add to the todo item")
 
 	return cmd
 
