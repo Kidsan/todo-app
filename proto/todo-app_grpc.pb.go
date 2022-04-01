@@ -23,6 +23,8 @@ type TodosClient interface {
 	Find(ctx context.Context, in *Todo, opts ...grpc.CallOption) (*Todo, error)
 	Update(ctx context.Context, in *Todo, opts ...grpc.CallOption) (*Todo, error)
 	Delete(ctx context.Context, in *Todo, opts ...grpc.CallOption) (*GetRequest, error)
+	DeleteTask(ctx context.Context, in *Task, opts ...grpc.CallOption) (*GetRequest, error)
+	SaveTask(ctx context.Context, in *Task, opts ...grpc.CallOption) (*Task, error)
 }
 
 type todosClient struct {
@@ -78,6 +80,24 @@ func (c *todosClient) Delete(ctx context.Context, in *Todo, opts ...grpc.CallOpt
 	return out, nil
 }
 
+func (c *todosClient) DeleteTask(ctx context.Context, in *Task, opts ...grpc.CallOption) (*GetRequest, error) {
+	out := new(GetRequest)
+	err := c.cc.Invoke(ctx, "/proto.Todos/DeleteTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *todosClient) SaveTask(ctx context.Context, in *Task, opts ...grpc.CallOption) (*Task, error) {
+	out := new(Task)
+	err := c.cc.Invoke(ctx, "/proto.Todos/SaveTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TodosServer is the server API for Todos service.
 // All implementations must embed UnimplementedTodosServer
 // for forward compatibility
@@ -87,6 +107,8 @@ type TodosServer interface {
 	Find(context.Context, *Todo) (*Todo, error)
 	Update(context.Context, *Todo) (*Todo, error)
 	Delete(context.Context, *Todo) (*GetRequest, error)
+	DeleteTask(context.Context, *Task) (*GetRequest, error)
+	SaveTask(context.Context, *Task) (*Task, error)
 	mustEmbedUnimplementedTodosServer()
 }
 
@@ -108,6 +130,12 @@ func (UnimplementedTodosServer) Update(context.Context, *Todo) (*Todo, error) {
 }
 func (UnimplementedTodosServer) Delete(context.Context, *Todo) (*GetRequest, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedTodosServer) DeleteTask(context.Context, *Task) (*GetRequest, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTask not implemented")
+}
+func (UnimplementedTodosServer) SaveTask(context.Context, *Task) (*Task, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SaveTask not implemented")
 }
 func (UnimplementedTodosServer) mustEmbedUnimplementedTodosServer() {}
 
@@ -212,6 +240,42 @@ func _Todos_Delete_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Todos_DeleteTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Task)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TodosServer).DeleteTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Todos/DeleteTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TodosServer).DeleteTask(ctx, req.(*Task))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Todos_SaveTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Task)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TodosServer).SaveTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.Todos/SaveTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TodosServer).SaveTask(ctx, req.(*Task))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Todos_ServiceDesc is the grpc.ServiceDesc for Todos service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -238,6 +302,14 @@ var Todos_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _Todos_Delete_Handler,
+		},
+		{
+			MethodName: "DeleteTask",
+			Handler:    _Todos_DeleteTask_Handler,
+		},
+		{
+			MethodName: "SaveTask",
+			Handler:    _Todos_SaveTask_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

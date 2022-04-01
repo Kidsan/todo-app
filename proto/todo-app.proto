@@ -11,6 +11,9 @@ service Todos {
   rpc Find(Todo) returns (Todo) {}
   rpc Update(Todo) returns (Todo) {}
   rpc Delete(Todo) returns (GetRequest) {}
+
+  rpc DeleteTask(Task) returns (GetRequest) {}
+  rpc SaveTask(Task) returns (Task) {}
 }
 
 message Todo {
