@@ -35,7 +35,7 @@ func (c *Client) Close() error {
 	return c.conn.Close()
 }
 
-func (c *Client) GetAll() ([]todoapp.Todo, error) {
+func (c *Client) GetAllTodos() ([]todoapp.Todo, error) {
 	todos, err := c.grpc.Get(context.Background(), &pb.GetRequest{})
 	if err != nil {
 		return nil, err
@@ -65,7 +65,7 @@ func (c *Client) GetAll() ([]todoapp.Todo, error) {
 	return result, nil
 }
 
-func (c *Client) Save(newTodo todoapp.Todo) (todoapp.Todo, error) {
+func (c *Client) SaveTodo(newTodo todoapp.Todo) (todoapp.Todo, error) {
 	var tasks []*pb.Task
 
 	for _, v := range newTodo.Tasks {
@@ -103,7 +103,7 @@ func (c *Client) Save(newTodo todoapp.Todo) (todoapp.Todo, error) {
 	}, nil
 }
 
-func (c *Client) Find(toFind todoapp.Todo) (todoapp.Todo, error) {
+func (c *Client) FindTodo(toFind todoapp.Todo) (todoapp.Todo, error) {
 	todo, err := c.grpc.Find(context.Background(), &pb.Todo{Id: toFind.ID})
 	if err != nil {
 		return todoapp.Todo{}, err
@@ -124,46 +124,33 @@ func (c *Client) Find(toFind todoapp.Todo) (todoapp.Todo, error) {
 	return result, nil
 }
 
-func (c *Client) Update(toUpdate todoapp.Todo) (todoapp.Todo, error) {
-	var tasks []*pb.Task
-
-	for _, v := range toUpdate.Tasks {
-		tasks = append(tasks, &pb.Task{
-			Name: v.Name,
-		})
-	}
-	todo, err := c.grpc.Save(context.Background(), &pb.Todo{
-		Name:        toUpdate.Name,
-		Description: toUpdate.Description,
-		Tasks:       tasks,
-	})
-
-	if err != nil {
-		return todoapp.Todo{}, err
-	}
-
-	var savedTasks []todoapp.Task
-
-	for _, v := range savedTasks {
-		savedTasks = append(savedTasks, todoapp.Task{
-			ID:     v.TodoID,
-			TodoID: v.TodoID,
-			Name:   v.Name,
-		})
-	}
-
-	return todoapp.Todo{
-		Name:        todo.Name,
-		Description: todo.Description,
-		Tasks:       savedTasks,
-	}, nil
-}
-
-func (c *Client) Delete(toDelete todoapp.Todo) error {
+func (c *Client) DeleteTodo(toDelete todoapp.Todo) error {
 	_, err := c.grpc.Delete(context.Background(), &pb.Todo{Id: toDelete.ID})
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (c *Client) DeleteTask(toDelete todoapp.Task) error {
+	_, err := c.grpc.DeleteTask(context.Background(), &pb.Task{Id: toDelete.ID})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) SaveTask(newTask todoapp.Task) (todoapp.Task, error) {
+	task, err := c.grpc.SaveTask(context.Background(), &pb.Task{
+		Id:   newTask.ID,
+		Name: newTask.Name,
+	})
+
+	if err != nil {
+		return todoapp.Task{}, err
+	}
+
+	return todoapp.Task{ID: task.Id, Name: task.Name}, nil
 }

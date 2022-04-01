@@ -9,3 +9,13 @@ services:
       POSTGRES_PASSWORD: "todosapi"
     ports:
       - 5432:5432
+    expose:
+      - 5432
+  api:
+    build:
+      context: .
+    image: kidsan/todo-api:develop
+    environment:
+     - DATABASE_HOST=database
+    ports:
+      - 3000:3000

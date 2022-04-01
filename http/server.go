@@ -18,14 +18,16 @@ type Server struct {
 	config     todoapp.ServerConfig
 
 	todoService todoapp.TodoService
+	taskService todoapp.TaskService
 }
 
-func NewServer(config todoapp.APIConfig, logger *zap.Logger, todoService todoapp.TodoService) *Server {
+func NewServer(config todoapp.APIConfig, logger *zap.Logger, todoService todoapp.TodoService, taskService todoapp.TaskService) *Server {
 	server := &Server{
 		config:      config.Server,
 		logger:      logger,
 		grpcServer:  grpc.NewServer(),
 		todoService: todoService,
+		taskService: taskService,
 	}
 	pb.RegisterTodosServer(server.grpcServer, server.buildTodoServer())
 	return server
@@ -33,7 +35,7 @@ func NewServer(config todoapp.APIConfig, logger *zap.Logger, todoService todoapp
 
 func (s *Server) Start() {
 	s.logger.Info(fmt.Sprintf("GRPC Application listening on port %d", s.config.Port))
-	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", s.config.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", s.config.Port))
 	if err != nil {
 		s.logger.Sugar().Fatalf("failed to listen: %v", err)
 	}
