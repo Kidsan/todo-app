@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"gopkg.in/yaml.v2"
+	"github.com/spf13/cobra"
 )
 
 func Warnf(msg string, args ...interface{}) {
@@ -15,16 +15,21 @@ func Infof(msg string, args ...interface{}) {
 	fmt.Printf(msg+"\n", args...)
 }
 
-func PrintObject(object ...any) error {
+type yamlable interface {
+	ToYAML() (string, error)
+}
+
+func PrintObject[T yamlable](cmd *cobra.Command, object ...T) error {
 	var result []string
 	for i := 0; i < len(object); i++ {
-		content, err := yaml.Marshal(object[i])
+		content, err := object[i].ToYAML()
 		if err != nil {
-			return fmt.Errorf("unable to format yaml %w", err)
+			return err
 		}
 		result = append(result, string(content))
 	}
-	fmt.Println(strings.Join(result, "---\n"))
+
+	fmt.Fprintf(cmd.OutOrStdout(), strings.Join(result, "---\n"))
 
 	return nil
 }

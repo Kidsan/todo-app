@@ -5,25 +5,24 @@ import (
 	"strconv"
 
 	todoapp "github.com/kidsan/todo-app"
-	"github.com/kidsan/todo-app/http"
 	"github.com/spf13/cobra"
 )
 
-func NewSaveCommand(cfg todoapp.CLIConfig) *cobra.Command {
-	cmdGet := &cobra.Command{
-		Use:     "save",
-		Aliases: []string{"save", "create", "update", "apply"},
-		Short:   "save resources",
+func NewCreateCommand(client todoapp.TodoClient) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "create",
+		Aliases: []string{"create"},
+		Short:   "create resources",
 	}
 
-	cmdGet.AddCommand(
-		newSaveTodoCommand(cfg),
+	cmd.AddCommand(
+		newCreateTodoCommand(client),
 	)
 
-	return cmdGet
+	return cmd
 }
 
-func newSaveTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
+func newCreateTodoCommand(client todoapp.TodoClient) *cobra.Command {
 	var todoName string
 	var description string
 	var tasks []string
@@ -34,8 +33,6 @@ func newSaveTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
 		Aliases: []string{"todos"},
 		Short:   "create todos",
 		Run: func(cmd *cobra.Command, args []string) {
-			client := http.NewClient(fmt.Sprintf("%s:%v", cfg.Server.Host, cfg.Server.Port))
-			defer client.Close()
 
 			var tasksToCreate []todoapp.Task
 
@@ -58,9 +55,9 @@ func newSaveTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
 				Tasks:       tasksToCreate,
 			}
 
-			res, err := client.Save(newTodo)
+			res, err := client.SaveTodo(newTodo)
 			cobra.CheckErr(err)
-			PrintObject(res)
+			PrintObject(cmd, res)
 		},
 	}
 

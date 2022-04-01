@@ -5,25 +5,25 @@ import (
 	"strconv"
 
 	todoapp "github.com/kidsan/todo-app"
-	"github.com/kidsan/todo-app/http"
 	"github.com/spf13/cobra"
 )
 
-func NewRemoveCommand(cfg todoapp.CLIConfig) *cobra.Command {
-	cmdGet := &cobra.Command{
+func NewRemoveCommand(client todoapp.TodoClient) *cobra.Command {
+	cmd := &cobra.Command{
 		Use:     "delete",
 		Aliases: []string{"remove", "rm"},
 		Short:   "delete resources",
 	}
 
-	cmdGet.AddCommand(
-		newDeleteTodoCommand(cfg),
+	cmd.AddCommand(
+		newDeleteTodoCommand(client),
+		newDeleteTaskCommand(client),
 	)
 
-	return cmdGet
+	return cmd
 }
 
-func newDeleteTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
+func newDeleteTodoCommand(client todoapp.TodoClient) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "todo",
 		Aliases: []string{"todos"},
@@ -40,11 +40,38 @@ func newDeleteTodoCommand(cfg todoapp.CLIConfig) *cobra.Command {
 			if id == 0 {
 				cobra.CheckErr(fmt.Errorf("invalid id"))
 			}
-			client := http.NewClient(fmt.Sprintf("%s:%v", cfg.Server.Host, cfg.Server.Port))
-			defer client.Close()
 
-			err = client.Delete(todoapp.Todo{ID: int32(id)})
+			err = client.DeleteTodo(todoapp.Todo{ID: int32(id)})
 			cobra.CheckErr(err)
+			Infof("deleted")
+
+		},
+	}
+
+	return cmd
+}
+
+func newDeleteTaskCommand(client todoapp.TodoClient) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:     "task",
+		Aliases: []string{"tasks"},
+		Short:   "delete tasks",
+		Run: func(cmd *cobra.Command, args []string) {
+			if len(args) == 0 {
+				cobra.CheckErr(fmt.Errorf("please specify a task to be deleted"))
+			}
+			id, err := strconv.Atoi(args[0])
+			if err != nil {
+				cobra.CheckErr(fmt.Errorf("invalid id"))
+			}
+
+			if id == 0 {
+				cobra.CheckErr(fmt.Errorf("invalid id"))
+			}
+
+			err = client.DeleteTask(todoapp.Task{ID: int32(id)})
+			cobra.CheckErr(err)
+			Infof("deleted")
 
 		},
 	}

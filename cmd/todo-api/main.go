@@ -26,7 +26,8 @@ func main() {
 		panic(err)
 	}
 	todoService := sql.NewTodoService(database)
-	server := http.NewServer(config, logger, todoService)
+	taskService := sql.NewTaskService(database)
+	server := http.NewServer(config, logger, todoService, taskService)
 
 	server.Start()
 }
