@@ -44,7 +44,7 @@ func NewDB(dsn string) *DB {
 // Open opens the database connection.
 func (db *DB) Open() (err error) {
 	connection, err := gorm.Open(postgres.Open(db.DSN), &gorm.Config{
-		Logger: gormLogger.Default.LogMode(gormLogger.Info),
+		Logger: gormLogger.Default.LogMode(gormLogger.Silent),
 	})
 
 	if err != nil {
