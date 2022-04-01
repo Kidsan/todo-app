@@ -42,24 +42,14 @@ func (t *TodoService) Find(ctx context.Context, toFind todoapp.Todo) (todoapp.To
 	return result, nil
 }
 
-// // Create records a new Todo in the database
-// func (t *TodoService) Create(ctx context.Context, newTodo todoapp.Todo) (todoapp.Todo, error) {
-// 	tx := t.db.conn.Create(&newTodo)
-// 	if tx.Error != nil {
-// 		return todoapp.Todo{}, fmt.Errorf("sql: could not create todo: %w", tx.Error)
-// 	}
-
-// 	return newTodo, nil
-// }
-
-// Update modifies a new Todo in the database
+// Update upserts a Todo in the database
 func (t *TodoService) Update(ctx context.Context, modifiedTodo todoapp.Todo) (todoapp.Todo, error) {
 	tx := t.db.conn.Save(&modifiedTodo)
 	if tx.Error != nil {
 		return todoapp.Todo{}, fmt.Errorf("sql: could not list update todo: %w", tx.Error)
 	}
 
-	return modifiedTodo, nil
+	return t.Find(ctx, modifiedTodo)
 }
 
 // Delete removes a Todo and its Tasks from the database

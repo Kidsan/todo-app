@@ -2,7 +2,7 @@ start:
 	@go run ./cmd/todo-api/
 
 build:
-	@CGO_ENABLED=0 go build ./cmd/...
+	@CGO_ENABLED=0 go build ./cmd/todoctl
 
 test:
 	@go test ./... -v
